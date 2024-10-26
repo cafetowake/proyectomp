@@ -19,7 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import proyecto_moviles.uvg.edu.gt.R
 
 @Composable
-fun LoginScreen() {
+fun StartScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,8 +81,8 @@ fun LoginScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun StartScreenPreview() {
     MaterialTheme {
-        LoginScreen()
+        StartScreen()
     }
 }

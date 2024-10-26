@@ -19,9 +19,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import java.text.SimpleDateFormat
 import java.util.*
 
+
+
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen() {
+fun CalanderScreen() {
     var selectedDate by remember { mutableStateOf("") }
 
     val formatter = SimpleDateFormat("EEE, MMM dd", Locale.getDefault())
@@ -183,5 +185,5 @@ fun EventList(events: List<Pair<String, String>>) {
 @Preview(showBackground = true)
 @Composable
 fun CalendarScreenPreview() {
-    CalendarScreen()
+    CalanderScreen()
 }

@@ -22,7 +22,10 @@ import androidx.navigation.NavController
 import proyecto_moviles.uvg.edu.gt.R
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onNavigateToHome: () -> Unit,
+    onNavigateToSignUp: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -115,7 +118,7 @@ fun LoginScreen() {
 
 
             Button(
-                onClick = { /* Acción de Log In */ },
+                onClick = onNavigateToHome,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
@@ -136,7 +139,7 @@ fun LoginScreen() {
             ) {
                 Text(text = "Don't have an account?", color = MaterialTheme.colorScheme.onBackground)
                 Spacer(modifier = Modifier.width(4.dp))
-                TextButton(onClick = { /* Acción de Sign Up */ }) {
+                TextButton(onClick = onNavigateToSignUp) {
                     Text(text = "Sign Up", color = MaterialTheme.colorScheme.onTertiaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))
                 }
             }
@@ -147,5 +150,5 @@ fun LoginScreen() {
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+    LoginScreen(onNavigateToHome = {}, onNavigateToSignUp = {})
 }

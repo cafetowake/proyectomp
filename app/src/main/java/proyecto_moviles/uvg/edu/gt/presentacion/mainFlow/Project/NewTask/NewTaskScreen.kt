@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import proyecto_moviles.uvg.edu.gt.R
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)

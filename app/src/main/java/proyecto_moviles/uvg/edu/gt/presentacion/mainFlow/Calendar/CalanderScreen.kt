@@ -23,7 +23,7 @@ import java.util.*
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun CalanderScreen() {
+fun CalendarScreen(onNavigateToToDo: () -> Unit, onNavigateToProfile: () -> Unit) {
     var selectedDate by remember { mutableStateOf("") }
 
     val formatter = SimpleDateFormat("EEE, MMM dd", Locale.getDefault())
@@ -185,5 +185,5 @@ fun EventList(events: List<Pair<String, String>>) {
 @Preview(showBackground = true)
 @Composable
 fun CalendarScreenPreview() {
-    CalanderScreen()
+    CalendarScreen( )
 }

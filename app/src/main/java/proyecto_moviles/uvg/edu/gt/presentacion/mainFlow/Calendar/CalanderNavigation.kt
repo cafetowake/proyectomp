@@ -1,11 +1,13 @@
 package proyecto_moviles.uvg.edu.gt.Calendar
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.NavController
+import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.calendarNavigation(navController: NavController) {
-    composable("calendar") {
-        CalanderScreen(navController)
-    }
+@Serializable
+sealed class CalendarDestination(val route: String) {
+    data object Calendar : CalendarDestination("calendar")
+}
+
+fun NavController.navigateToCalendar() {
+    this.navigate(CalendarDestination.Calendar.route)
 }

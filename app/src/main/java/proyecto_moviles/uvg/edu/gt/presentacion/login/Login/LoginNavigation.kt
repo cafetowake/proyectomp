@@ -1,12 +1,13 @@
 package proyecto_moviles.uvg.edu.gt.Login
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.NavController
-import proyecto_moviles.uvg.edu.gt.login.LoginScreen
+import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.loginNavigation(navController: NavController) {
-    composable("login") {
-        LoginScreen(navController)
-    }
+@Serializable
+sealed class LoginDestination(val route: String) {
+    data object Login : LoginDestination("login")
+}
+
+fun NavController.navigateToLogin() {
+    this.navigate(LoginDestination.Login.route)
 }

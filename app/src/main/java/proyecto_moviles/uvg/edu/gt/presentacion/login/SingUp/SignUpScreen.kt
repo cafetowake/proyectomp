@@ -18,7 +18,10 @@ import androidx.compose.ui.unit.sp
 import proyecto_moviles.uvg.edu.gt.R
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    onNavigateToHome: () -> Unit,
+    onNavigateToLogin: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +97,7 @@ fun SignUpScreen() {
             )
 
             Button(
-                onClick = { /* Acción de Sign Up */ },
+                onClick = onNavigateToHome,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
@@ -112,7 +115,7 @@ fun SignUpScreen() {
             ) {
                 Text(text = "Have an account?", color = MaterialTheme.colorScheme.onBackground)
                 Spacer(modifier = Modifier.width(4.dp))
-                TextButton(onClick = { /* Acción de Log In */ }) {
+                TextButton(onClick = onNavigateToLogin) {
                     Text(text = "  Log In", color = MaterialTheme.colorScheme.onTertiaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))
                 }
             }
@@ -123,6 +126,6 @@ fun SignUpScreen() {
 @Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {
-    SignUpScreen()
+    SignUpScreen( onNavigateToHome = {}, onNavigateToLogin = {})
 }
 

@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,7 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.clip
-import com.uvg.pruebasprojecto.ui.theme.PruebasProjectoTheme
+import proyecto_moviles.uvg.edu.gt.R
+import proyecto_moviles.uvg.edu.gt.ui.theme.ProyectomovilesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -192,7 +192,7 @@ fun ProjectsScreen() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewProjectsScreen() {
-    PruebasProjectoTheme {
+    ProyectomovilesTheme {
         ProjectsScreen()
     }
 }

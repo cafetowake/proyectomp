@@ -13,18 +13,75 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.MaterialTheme
-import androidx.navigation.NavController
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import proyecto_moviles.uvg.edu.gt.R
-import proyecto_moviles.uvg.edu.gt.presentacion.navigation.Screen
+import proyecto_moviles.uvg.edu.gt.presentacion.Inicio.StartState
+import proyecto_moviles.uvg.edu.gt.presentacion.Inicio.StartViewModel
+import proyecto_moviles.uvg.edu.gt.presentacion.common.ErrorView
+import proyecto_moviles.uvg.edu.gt.presentacion.common.LoadingView
+
+@Composable
+fun StartRoute(
+    viewModel: StartViewModel = viewModel(factory = StartViewModel.Factory),
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit
+){
+    val state = viewModel.state.collectAsState()
+
+    StartScreen(
+        state = state,
+        onLoginClick = onLoginClick,
+        onSignUpClick = onSignUpClick,
+        modifier = Modifier.fillMaxSize()
+    )
+}
 
 @Composable
 fun StartScreen(
-    navController: NavController, 
-    onLoginClick: () -> Unit = { navController.navigate("login") },
-    onSignUpClick: () -> Unit = { navController.navigate("sign_up") }
+    state: StartState,
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    modifier: Modifier
+){
+    Box(
+        modifier = Modifier
+    ){
+        when{
+            state.isLoading -> {
+                LoadingView(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            state.isError -> {
+                ErrorView(
+                    onRetryClick = { /*TODO*/ },
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            else{
+                items(state.data) { user ->
+                    StartItem(
+                        user = user,
+                        onLoginClick = onLoginClick,
+                        onSignUpClick = onSignUpClick,
+                        modifier = Modifier.fillMaxSize(),
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+private fun StartItem(
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    modifier: Modifier = Modifier
+
 ) {
     Column(
         modifier = Modifier
@@ -86,11 +143,3 @@ fun StartScreen(
 }
 
 
-
-@Preview(showBackground = true)
-@Composable
-fun StartScreenPreview() {
-    MaterialTheme {
-        StartScreen(navController = NavController( ))
-    }
-}

@@ -1,14 +1,19 @@
 package proyecto_moviles.uvg.edu.gt.data.network.dto
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
+import proyecto_moviles.uvg.edu.gt.data.model.User
 
-@Entity(tableName = "users")
 @Serializable
 data class UserDto(
-    @PrimaryKey val id: String,
+    val id: String,
     val username: String,
-    val email: String,
-    val passwordHash: String
+    val email: String
 )
+
+fun UserDto.mapToUser(): User {
+    return User(
+        id = id,
+        name = username,
+        email = email
+    )
+}

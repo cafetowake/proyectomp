@@ -19,6 +19,7 @@ splashScreen = "1.0.1"
 room = "2.6.1"
 ktor = "2.3.12"
 coil = "3.0.0-rc01"
+uiDesktop = "1.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +57,7 @@ androidx-cardview = { group = "androidx.cardview", name = "cardview", version.re
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version = "1.7.4" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version = "1.7.4" }
 androidx-compose-material = { module = "androidx.compose.material:material", version = "1.7.4" }
+androidx-ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", version.ref = "uiDesktop" }
 
 
 [plugins]

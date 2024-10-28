@@ -1,0 +1,1409 @@
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioScreen.kt
+rename from app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioScreen.kt
+rename to app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioScreen.kt
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioScreen.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioScreen.kt	(date 1730086191781)
+@@ -13,13 +13,76 @@
+ import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.text.font.FontWeight
+-import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.unit.sp
+ import androidx.compose.material3.MaterialTheme
++import androidx.compose.runtime.collectAsState
++import androidx.lifecycle.viewmodel.compose.viewModel
+ import proyecto_moviles.uvg.edu.gt.R
++import proyecto_moviles.uvg.edu.gt.presentacion.Inicio.StartState
++import proyecto_moviles.uvg.edu.gt.presentacion.Inicio.StartViewModel
++import proyecto_moviles.uvg.edu.gt.presentacion.common.ErrorView
++import proyecto_moviles.uvg.edu.gt.presentacion.common.LoadingView
++
++@Composable
++fun StartRoute(
++    viewModel: StartViewModel = viewModel(factory = StartViewModel.Factory),
++    onLoginClick: () -> Unit,
++    onSignUpClick: () -> Unit
++){
++    val state = viewModel.state.collectAsState()
++
++    StartScreen(
++        state = state,
++        onLoginClick = onLoginClick,
++        onSignUpClick = onSignUpClick,
++        modifier = Modifier.fillMaxSize()
++    )
++}
++
++@Composable
++fun StartScreen(
++    state: StartState,
++    onLoginClick: () -> Unit,
++    onSignUpClick: () -> Unit,
++    modifier: Modifier
++){
++    Box(
++        modifier = Modifier
++    ){
++        when{
++            state.isLoading -> {
++                LoadingView(
++                    modifier = Modifier.align(Alignment.Center)
++                )
++            }
++
++            state.isError -> {
++                ErrorView(
++                    onRetryClick = { /*TODO*/ },
++                    modifier = Modifier.align(Alignment.Center)
++                )
++            }
++            else{
++                items(state.data) { user ->
++                    StartItem(
++                        user = user,
++                        onLoginClick = onLoginClick,
++                        onSignUpClick = onSignUpClick,
++                        modifier = Modifier.fillMaxSize(),
++                }
++
++            }
++        }
++    }
++}
+ 
+ @Composable
+-fun LoginScreen() {
++private fun StartItem(
++    onLoginClick: () -> Unit,
++    onSignUpClick: () -> Unit,
++    modifier: Modifier = Modifier
++
++) {
+     Column(
+         modifier = Modifier
+             .fillMaxSize()
+@@ -39,7 +102,7 @@
+ 
+ 
+         Button(
+-            onClick = { /* Acción para Log In */ },
++            onClick = onLoginClick,
+             colors = ButtonDefaults.buttonColors(
+                 containerColor = MaterialTheme.colorScheme.primary
+             ),
+@@ -60,7 +123,7 @@
+ 
+ 
+         Button(
+-            onClick = { /* Acción para Sign Up */ },
++            onClick = onSignUpClick,
+             colors = ButtonDefaults.buttonColors(
+                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+             ),
+@@ -79,10 +142,4 @@
+     }
+ }
+ 
+-@Preview(showBackground = true)
+-@Composable
+-fun LoginScreenPreview() {
+-    MaterialTheme {
+-        LoginScreen()
+-    }
+-}
++
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,170 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.New_Task
+-
+-import android.app.DatePickerDialog
+-import android.content.Context
+-import androidx.compose.foundation.Image
+-import androidx.compose.foundation.layout.*
+-import androidx.compose.material.icons.Icons
+-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+-import androidx.compose.material.icons.filled.DateRange
+-import androidx.compose.material.icons.filled.Edit
+-import androidx.compose.material3.*
+-import androidx.compose.runtime.*
+-import androidx.compose.ui.Alignment
+-import androidx.compose.ui.Modifier
+-import androidx.compose.ui.graphics.vector.ImageVector
+-import androidx.compose.ui.layout.ContentScale
+-import androidx.compose.ui.platform.LocalContext
+-import androidx.compose.ui.res.vectorResource
+-import androidx.compose.ui.tooling.preview.Preview
+-import androidx.compose.ui.unit.dp
+-import proyecto_moviles.uvg.edu.gt.R
+-import java.util.*
+-
+-@OptIn(ExperimentalMaterial3Api::class)
+-@Composable
+-fun NewTaskScreen() {
+-    var startDate by remember { mutableStateOf("") }
+-    var endDate by remember { mutableStateOf("") }
+-    val context = LocalContext.current
+-
+-    Scaffold(
+-        topBar = {
+-            CenterAlignedTopAppBar(
+-                title = { Text("New Task") },
+-                navigationIcon = {
+-                    IconButton(onClick = { /* Acción al presionar botón de volver */ }) {
+-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+-                    }
+-                }
+-            )
+-        }
+-    ) { paddingValues ->
+-        Column(
+-            modifier = Modifier
+-                .padding(paddingValues)
+-                .padding(16.dp)
+-        ) {
+-            // Imagen
+-            Image(
+-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
+-                contentDescription = "Task icon",
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .wrapContentHeight()
+-                    .padding(16.dp),
+-                contentScale = ContentScale.Fit
+-            )
+-
+-            // Nombre de la tarea
+-            OutlinedTextField(
+-                value = "",
+-                onValueChange = {},
+-                label = { Text("Task name") },
+-                modifier = Modifier.fillMaxWidth(),
+-                trailingIcon = {
+-                    Icon(Icons.Filled.Edit, contentDescription = "Edit task name")
+-                }
+-            )
+-
+-            Spacer(modifier = Modifier.height(8.dp))
+-
+-            // Descripción de la tarea
+-            OutlinedTextField(
+-                value = "",
+-                onValueChange = {},
+-                label = { Text("Task description") },
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .padding(vertical = 8.dp),
+-                trailingIcon = {
+-                    Icon(Icons.Filled.Edit, contentDescription = "Edit task description")
+-                }
+-            )
+-
+-            Spacer(modifier = Modifier.height(8.dp))
+-
+-            // Campo de fecha de inicio
+-            DatePickerField(
+-                label = "Start date",
+-                selectedDate = startDate,
+-                onDateSelected = { startDate = it },
+-                context = context
+-            )
+-
+-            Spacer(modifier = Modifier.height(8.dp))
+-
+-            // Campo de fecha de fin
+-            DatePickerField(
+-                label = "End date",
+-                selectedDate = endDate,
+-                onDateSelected = { endDate = it },
+-                context = context
+-            )
+-
+-            Spacer(modifier = Modifier.height(16.dp))
+-
+-            // Botón de guardar
+-            Box(
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .padding(top = 16.dp),
+-                contentAlignment = Alignment.Center
+-            ) {
+-                Button(
+-                    onClick = { /* Acción para guardar tarea */ }
+-                ) {
+-                    Text("Save")
+-                }
+-            }
+-        }
+-    }
+-}
+-
+-@Composable
+-fun DatePickerField(
+-    label: String,
+-    selectedDate: String,
+-    onDateSelected: (String) -> Unit,
+-    context: Context
+-) {
+-    OutlinedTextField(
+-        value = selectedDate,
+-        onValueChange = { /* No hace nada porque es solo lectura */ },
+-        label = { Text(label) },
+-        placeholder = { Text("mm/dd/yyyy") },
+-        modifier = Modifier
+-            .fillMaxWidth()
+-            .padding(bottom = 8.dp),
+-        trailingIcon = {
+-            IconButton(onClick = {
+-                showDatePicker(context, onDateSelected)
+-            }) {
+-                Icon(imageVector = Icons.Filled.DateRange, contentDescription = "Select $label")
+-            }
+-        },
+-        readOnly = true
+-    )
+-}
+-
+-fun showDatePicker(context: Context, onDateSelected: (String) -> Unit) {
+-    val calendar = Calendar.getInstance()
+-    val year = calendar.get(Calendar.YEAR)
+-    val month = calendar.get(Calendar.MONTH)
+-    val day = calendar.get(Calendar.DAY_OF_MONTH)
+-
+-    DatePickerDialog(
+-        context,
+-        { _, selectedYear, selectedMonth, selectedDay ->
+-            val selectedDate = "${selectedMonth + 1}/$selectedDay/$selectedYear"
+-            onDateSelected(selectedDate)
+-        },
+-        year, month, day
+-    ).show()
+-}
+-
+-@Preview(showBackground = true)
+-@Composable
+-fun NewTaskView() {
+-    NewTaskScreen()
+-}
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsNavigation.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsNavigation.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,20 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.Projects
+-
+-import androidx.navigation.NavGraphBuilder
+-import androidx.navigation.compose.composable
+-import kotlinx.serialization.Serializable
+-
+-@Serializable
+-data object ProjectsDestination
+-
+-fun NavGraphBuilder.projectsScreen(
+-    onProjectClick: () -> Unit,
+-    onAddProjectClick: () -> Unit
+-) {
+-    composable<ProjectsDestination> {
+-        ProjectsScreen(
+-            onSelectClick = onProjectClick,
+-            onAddProjectClick = onAddProjectClick
+-        )
+-    }
+-}
+Index: .idea/modules/app/Proyecto-moviles.app.iml
+===================================================================
+diff --git a/.idea/modules/app/Proyecto-moviles.app.iml b/.idea/modules/app/Proyecto-moviles.app.iml
+deleted file mode 100644
+--- a/.idea/modules/app/Proyecto-moviles.app.iml	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,9 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module version="4">
+-  <component name="ModuleClassLoaderOverlays">
+-    <paths>
+-      <option value="C:\Users\paula\AppData\Local\Temp\overlay4077726220542928961" />
+-      <option value="C:\Users\paula\AppData\Local\Temp\overlay5248428913140422612" />
+-    </paths>
+-  </component>
+-</module>
+\ No newline at end of file
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/data/api/HttpClientFactory.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/api/HttpClientFactory.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/api/HttpClientFactory.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/api/HttpClientFactory.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,37 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.data.api
+-
+-import io.ktor.client.HttpClient
+-import io.ktor.client.engine.cio.CIO
+-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+-import io.ktor.client.plugins.defaultRequest
+-import io.ktor.client.plugins.logging.ANDROID
+-import io.ktor.client.plugins.logging.LogLevel
+-import io.ktor.client.plugins.logging.Logger
+-import io.ktor.client.plugins.logging.Logging
+-import io.ktor.http.ContentType
+-import io.ktor.http.contentType
+-import io.ktor.serialization.kotlinx.json.json
+-import kotlinx.serialization.json.Json
+-
+-object HttpClientFactory {
+-    fun create(): HttpClient {
+-        return HttpClient(CIO.create()){
+-            install (Logging) {
+-                logger = Logger.ANDROID
+-                level = LogLevel.ALL
+-            }
+-
+-            install (ContentNegotiation) {
+-                json(
+-                    json = Json{
+-                        ignoreUnknownKeys = true
+-                    }
+-                )
+-            }
+-
+-            defaultRequest {
+-                contentType(ContentType.Application.Json)
+-            }
+-        }
+-    }
+-}
+\ No newline at end of file
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskNavigation.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskNavigation.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,2 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.New_Task
+-
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpNavigation.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpNavigation.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,2 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.Sing_up
+-
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,186 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.Projects
+-
+-import androidx.compose.foundation.background
+-import androidx.compose.foundation.layout.Arrangement
+-import androidx.compose.foundation.layout.Box
+-import androidx.compose.foundation.layout.Column
+-import androidx.compose.foundation.layout.Row
+-import androidx.compose.foundation.layout.Spacer
+-import androidx.compose.foundation.layout.fillMaxSize
+-import androidx.compose.foundation.layout.fillMaxWidth
+-import androidx.compose.foundation.layout.height
+-import androidx.compose.foundation.layout.padding
+-import androidx.compose.foundation.layout.size
+-import androidx.compose.foundation.layout.width
+-import androidx.compose.material.DropdownMenuItem
+-import androidx.compose.material.Icon
+-import androidx.compose.material.IconButton
+-import androidx.compose.material.icons.Icons
+-import androidx.compose.material.icons.filled.ArrowDropUp
+-import androidx.compose.material3.Button
+-import androidx.compose.material3.DropdownMenu
+-import androidx.compose.material3.Text
+-import androidx.compose.material3.TextField
+-import androidx.compose.runtime.Composable
+-import androidx.compose.runtime.getValue
+-import androidx.compose.runtime.mutableStateOf
+-import androidx.compose.runtime.remember
+-import androidx.compose.runtime.setValue
+-import androidx.compose.ui.Alignment
+-import androidx.compose.ui.Modifier
+-import androidx.compose.ui.graphics.Color
+-import androidx.compose.ui.text.font.FontWeight
+-import androidx.compose.ui.tooling.preview.Preview
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.unit.sp
+-
+-@Composable
+-fun CreateProjectScreenContent() {
+-    var projectNameCps by remember { mutableStateOf("") }
+-    var descriptionCps by remember { mutableStateOf("") }
+-    var inviteEmailCps by remember { mutableStateOf("") }
+-    var generalAccessCps by remember { mutableStateOf("Private") }
+-
+-    Column(
+-        modifier = Modifier
+-            .fillMaxSize()
+-            .padding(16.dp),
+-        verticalArrangement = Arrangement.Top,
+-        horizontalAlignment = Alignment.CenterHorizontally
+-    ) {
+-        // Image Placeholder
+-        Box(
+-            modifier = Modifier
+-                .size(200.dp)
+-                .background(Color.Gray),
+-            contentAlignment = Alignment.Center
+-        ) {
+-            // Placeholder para la imagen
+-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+-                Icon(
+-                    imageVector = Icons.Filled.ArrowDropUp,
+-                    contentDescription = "Image Placeholder",
+-                    modifier = Modifier.size(50.dp)
+-                )
+-                Spacer(modifier = Modifier.height(16.dp))
+-                Text(text = "1st", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+-            }
+-        }
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        Column(
+-            modifier = Modifier.fillMaxWidth(),
+-            horizontalAlignment = Alignment.Start
+-        ) {
+-            // Project name
+-            Text(
+-                text = "Project Name:",
+-                fontSize = 17.sp,
+-                modifier = Modifier.align(Alignment.Start)
+-            )
+-
+-            TextField(
+-                value = projectNameCps,
+-                onValueChange = { projectNameCps = it },
+-                label = { Text("Project name") },
+-                modifier = Modifier.fillMaxWidth()
+-            )
+-        }
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        // General Access
+-        Text(
+-            text = "General Access:",
+-            fontSize = 17.sp,
+-            modifier = Modifier.align(Alignment.Start)
+-        )
+-        var expandedCps by remember { mutableStateOf(false) }
+-        Box(modifier = Modifier.fillMaxWidth()) {
+-            TextField(
+-                value = generalAccessCps,
+-                onValueChange = {},
+-                modifier = Modifier.fillMaxWidth(),
+-                readOnly = true,
+-                trailingIcon = {
+-                    IconButton(onClick = { expandedCps = true }) {
+-                        Icon(
+-                            imageVector = Icons.Filled.ArrowDropUp,
+-                            contentDescription = "Dropdown Icon"
+-                        )
+-                    }
+-                }
+-            )
+-            DropdownMenu(
+-                expanded = expandedCps,
+-                onDismissRequest = { expandedCps = false }
+-            ) {
+-                DropdownMenuItem(onClick = {
+-                    generalAccessCps = "Private"
+-                    expandedCps = false
+-                }) {
+-                    Text("Private")
+-                }
+-                DropdownMenuItem(onClick = {
+-                    generalAccessCps = "Public"
+-                    expandedCps = false
+-                }) {
+-                    Text("Public")
+-                }
+-            }
+-        }
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        // Description
+-        Text(
+-            text = "Description:",
+-            fontSize = 17.sp,
+-            modifier = Modifier.align(Alignment.Start)
+-        )
+-        TextField(
+-            value = descriptionCps,
+-            onValueChange = { descriptionCps = it },
+-            label = { Text("Description") },
+-            modifier = Modifier.fillMaxWidth()
+-        )
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        // Invite
+-        Text(
+-            text = "Invite:",
+-            fontSize = 17.sp,
+-            modifier = Modifier.align(Alignment.Start)
+-        )
+-        Row(verticalAlignment = Alignment.CenterVertically) {
+-            TextField(
+-                value = inviteEmailCps,
+-                onValueChange = { inviteEmailCps = it },
+-                label = { Text("Invite") },
+-                modifier = Modifier.weight(1f)
+-            )
+-            Spacer(modifier = Modifier.width(8.dp))
+-            Button(onClick = { /* Logic to handle invite */ }) {
+-                Text("Done")
+-            }
+-        }
+-
+-        Spacer(modifier = Modifier.height(24.dp))
+-
+-        // Create Project Button
+-        Button(
+-            onClick = { /* Logic to handle project creation */ },
+-            modifier = Modifier.fillMaxWidth()
+-        ) {
+-            Text("Create Project")
+-        }
+-    }
+-}
+-
+-@Preview(showBackground = true)
+-@Composable
+-fun PreviewCreateProjectScreenContent() {
+-    CreateProjectScreenContent()
+-}
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpScreen.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpScreen.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpScreen.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,128 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.Sign_up
+-
+-import androidx.compose.foundation.Image
+-import androidx.compose.foundation.background
+-import androidx.compose.foundation.layout.*
+-import androidx.compose.material3.*
+-import androidx.compose.runtime.*
+-import androidx.compose.ui.Alignment
+-import androidx.compose.ui.Modifier
+-import androidx.compose.ui.graphics.graphicsLayer
+-import androidx.compose.ui.res.painterResource
+-import androidx.compose.ui.text.font.FontWeight
+-import androidx.compose.ui.text.input.PasswordVisualTransformation
+-import androidx.compose.ui.text.input.VisualTransformation
+-import androidx.compose.ui.tooling.preview.Preview
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.unit.sp
+-import proyecto_moviles.uvg.edu.gt.R
+-
+-@Composable
+-fun SignUpScreen() {
+-    Box(
+-        modifier = Modifier
+-            .fillMaxSize()
+-            .background(MaterialTheme.colorScheme.tertiary)
+-    ) {
+-
+-        Image(
+-            painter = painterResource(id = R.drawable.logo),
+-            contentDescription = "SignUp Background Logo",
+-            modifier = Modifier
+-                .fillMaxSize()
+-                .graphicsLayer {
+-                    alpha = 0.1f
+-                }
+-        )
+-
+-        Column(
+-            modifier = Modifier
+-                .fillMaxSize()
+-                .padding(24.dp),
+-            horizontalAlignment = Alignment.CenterHorizontally,
+-            verticalArrangement = Arrangement.Center
+-        ) {
+-
+-
+-
+-            Text(
+-                text = "Create a New Account",
+-                color = MaterialTheme.colorScheme.onTertiary,
+-                fontSize = 55.sp,
+-                fontWeight = FontWeight.Bold,
+-                modifier = Modifier.padding(bottom = 32.dp)
+-            )
+-
+-            val username = remember { mutableStateOf("") }
+-            TextField(
+-                value = username.value,
+-                onValueChange = { username.value = it },
+-                label = { Text("Username") },
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .padding(bottom = 16.dp)
+-            )
+-
+-            val email = remember { mutableStateOf("") }
+-            TextField(
+-                value = email.value,
+-                onValueChange = { email.value = it },
+-                label = { Text("Email") },
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .padding(bottom = 16.dp)
+-            )
+-
+-            val password = remember { mutableStateOf("") }
+-            val passwordVisible = remember { mutableStateOf(false) }
+-            TextField(
+-                value = password.value,
+-                onValueChange = { password.value = it },
+-                label = { Text("Password") },
+-                visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+-                trailingIcon = {
+-                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
+-                        Icon(
+-                            painter = painterResource(id = R.drawable.visibility_24px),
+-                            contentDescription = if (passwordVisible.value) "Hide password" else "Show password"
+-                        )
+-                    }
+-                },
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .padding(bottom = 16.dp)
+-            )
+-
+-            Button(
+-                onClick = { /* Acción de Sign Up */ },
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .height(50.dp)
+-                    .padding(bottom = 8.dp),
+-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onTertiaryContainer)
+-            ) {
+-                Text(text = "Sign Up", color = MaterialTheme.colorScheme.tertiaryContainer)
+-            }
+-
+-            Spacer(modifier = Modifier.height(16.dp))
+-
+-            Column(
+-                horizontalAlignment = Alignment.CenterHorizontally,
+-                modifier = Modifier.fillMaxWidth()
+-            ) {
+-                Text(text = "Have an account?", color = MaterialTheme.colorScheme.onBackground)
+-                Spacer(modifier = Modifier.width(4.dp))
+-                TextButton(onClick = { /* Acción de Log In */ }) {
+-                    Text(text = "  Log In", color = MaterialTheme.colorScheme.onTertiaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))
+-                }
+-            }
+-        }
+-    }
+-}
+-
+-@Preview(showBackground = true)
+-@Composable
+-fun SignUpScreenPreview() {
+-    SignUpScreen()
+-}
+-
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectNavigation.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectNavigation.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,14 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.Create_Proyecto
+-
+-import androidx.navigation.NavGraphBuilder
+-import androidx.navigation.compose.composable
+-import kotlinx.serialization.Serializable
+-
+-@Serializable
+-data object CreateProjectDestination
+-
+-fun NavGraphBuilder.createProjectScreen() {
+-    composable<CreateProjectDestination> {
+-        CreateProjectScreenContent()
+-    }
+-}
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,2 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.Inicio
+-
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectScreen.kt
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectScreen.kt
+deleted file mode 100644
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectScreen.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ /dev/null	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
+@@ -1,186 +0,0 @@
+-package proyecto_moviles.uvg.edu.gt.Create_Proyecto
+-
+-import androidx.compose.foundation.background
+-import androidx.compose.foundation.layout.Arrangement
+-import androidx.compose.foundation.layout.Box
+-import androidx.compose.foundation.layout.Column
+-import androidx.compose.foundation.layout.Row
+-import androidx.compose.foundation.layout.Spacer
+-import androidx.compose.foundation.layout.fillMaxSize
+-import androidx.compose.foundation.layout.fillMaxWidth
+-import androidx.compose.foundation.layout.height
+-import androidx.compose.foundation.layout.padding
+-import androidx.compose.foundation.layout.size
+-import androidx.compose.foundation.layout.width
+-import androidx.compose.material.DropdownMenuItem
+-import androidx.compose.material.Icon
+-import androidx.compose.material.IconButton
+-import androidx.compose.material.icons.Icons
+-import androidx.compose.material.icons.filled.ArrowDropUp
+-import androidx.compose.material3.Button
+-import androidx.compose.material3.DropdownMenu
+-import androidx.compose.material3.Text
+-import androidx.compose.material3.TextField
+-import androidx.compose.runtime.Composable
+-import androidx.compose.runtime.getValue
+-import androidx.compose.runtime.mutableStateOf
+-import androidx.compose.runtime.remember
+-import androidx.compose.runtime.setValue
+-import androidx.compose.ui.Alignment
+-import androidx.compose.ui.Modifier
+-import androidx.compose.ui.graphics.Color
+-import androidx.compose.ui.text.font.FontWeight
+-import androidx.compose.ui.tooling.preview.Preview
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.unit.sp
+-
+-@Composable
+-fun CreateProjectScreenContent() {
+-    var projectNameCps by remember { mutableStateOf("") }
+-    var descriptionCps by remember { mutableStateOf("") }
+-    var inviteEmailCps by remember { mutableStateOf("") }
+-    var generalAccessCps by remember { mutableStateOf("Private") }
+-
+-    Column(
+-        modifier = Modifier
+-            .fillMaxSize()
+-            .padding(16.dp),
+-        verticalArrangement = Arrangement.Top,
+-        horizontalAlignment = Alignment.CenterHorizontally
+-    ) {
+-        // Image Placeholder
+-        Box(
+-            modifier = Modifier
+-                .size(200.dp)
+-                .background(Color.Gray),
+-            contentAlignment = Alignment.Center
+-        ) {
+-            // Placeholder para la imagen
+-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+-                Icon(
+-                    imageVector = Icons.Filled.ArrowDropUp,
+-                    contentDescription = "Image Placeholder",
+-                    modifier = Modifier.size(50.dp)
+-                )
+-                Spacer(modifier = Modifier.height(16.dp))
+-                Text(text = "1st", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+-            }
+-        }
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        Column(
+-            modifier = Modifier.fillMaxWidth(),
+-            horizontalAlignment = Alignment.Start
+-        ) {
+-            // Project name
+-            Text(
+-                text = "Project Name:",
+-                fontSize = 17.sp,
+-                modifier = Modifier.align(Alignment.Start)
+-            )
+-
+-            TextField(
+-                value = projectNameCps,
+-                onValueChange = { projectNameCps = it },
+-                label = { Text("Project name") },
+-                modifier = Modifier.fillMaxWidth()
+-            )
+-        }
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        // General Access
+-        Text(
+-            text = "General Access:",
+-            fontSize = 17.sp,
+-            modifier = Modifier.align(Alignment.Start)
+-        )
+-        var expandedCps by remember { mutableStateOf(false) }
+-        Box(modifier = Modifier.fillMaxWidth()) {
+-            TextField(
+-                value = generalAccessCps,
+-                onValueChange = {},
+-                modifier = Modifier.fillMaxWidth(),
+-                readOnly = true,
+-                trailingIcon = {
+-                    IconButton(onClick = { expandedCps = true }) {
+-                        Icon(
+-                            imageVector = Icons.Filled.ArrowDropUp,
+-                            contentDescription = "Dropdown Icon"
+-                        )
+-                    }
+-                }
+-            )
+-            DropdownMenu(
+-                expanded = expandedCps,
+-                onDismissRequest = { expandedCps = false }
+-            ) {
+-                DropdownMenuItem(onClick = {
+-                    generalAccessCps = "Private"
+-                    expandedCps = false
+-                }) {
+-                    Text("Private")
+-                }
+-                DropdownMenuItem(onClick = {
+-                    generalAccessCps = "Public"
+-                    expandedCps = false
+-                }) {
+-                    Text("Public")
+-                }
+-            }
+-        }
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        // Description
+-        Text(
+-            text = "Description:",
+-            fontSize = 17.sp,
+-            modifier = Modifier.align(Alignment.Start)
+-        )
+-        TextField(
+-            value = descriptionCps,
+-            onValueChange = { descriptionCps = it },
+-            label = { Text("Description") },
+-            modifier = Modifier.fillMaxWidth()
+-        )
+-
+-        Spacer(modifier = Modifier.height(16.dp))
+-
+-        // Invite
+-        Text(
+-            text = "Invite:",
+-            fontSize = 17.sp,
+-            modifier = Modifier.align(Alignment.Start)
+-        )
+-        Row(verticalAlignment = Alignment.CenterVertically) {
+-            TextField(
+-                value = inviteEmailCps,
+-                onValueChange = { inviteEmailCps = it },
+-                label = { Text("Invite") },
+-                modifier = Modifier.weight(1f)
+-            )
+-            Spacer(modifier = Modifier.width(8.dp))
+-            Button(onClick = { /* Logic to handle invite */ }) {
+-                Text("Done")
+-            }
+-        }
+-
+-        Spacer(modifier = Modifier.height(24.dp))
+-
+-        // Create Project Button
+-        Button(
+-            onClick = { /* Logic to handle project creation */ },
+-            modifier = Modifier.fillMaxWidth()
+-        ) {
+-            Text("Create Project")
+-        }
+-    }
+-}
+-
+-@Preview(showBackground = true)
+-@Composable
+-fun PreviewCreateProjectScreenContent() {
+-    CreateProjectScreenContent()
+-}
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt
+new file mode 100644
+--- /dev/null	(date 1730085306341)
++++ b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt	(date 1730085306341)
+@@ -0,0 +1,19 @@
++package proyecto_moviles.uvg.edu.gt.Inicio
++
++import androidx.navigation.NavGraphBuilder
++import androidx.navigation.compose.composable
++import kotlinx.serialization.Serializable
++
++@Serializable
++data object StartDestination
++
++fun NavGraphBuilder.StartScreen(
++    navigatetoStart: () -> Unit
++){
++    composable<StartDestination>{
++        StartRoute(
++            onLoginClick = navigatetoLogin,
++            onSignUpClick = navigatetoSignUp
++        )
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package proyecto_moviles.uvg.edu.gt.login\r\n\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.foundation.text.KeyboardOptions\r\nimport androidx.compose.material3.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.alpha\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.input.KeyboardType\r\nimport androidx.compose.ui.text.input.PasswordVisualTransformation\r\nimport androidx.compose.ui.text.input.VisualTransformation\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport proyecto_moviles.uvg.edu.gt.R\r\n\r\n@Composable\r\nfun LoginScreen() {\r\n    Box(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .background(MaterialTheme.colorScheme.tertiary)\r\n    ) {\r\n\r\n        Image(\r\n            painter = painterResource(id = R.drawable.logo),\r\n            contentDescription = null,\r\n            contentScale = ContentScale.Crop,\r\n            modifier = Modifier\r\n                .size(200.dp)\r\n                .offset(x = (-70).dp, y = (-120).dp)\r\n                .alpha(0.2f)\r\n        )\r\n\r\n        Image(\r\n            painter = painterResource(id = R.drawable.logo),\r\n            contentDescription = null,\r\n            contentScale = ContentScale.Crop,\r\n            modifier = Modifier\r\n                .size(200.dp)\r\n                .offset(x = (70).dp, y = (520).dp)\r\n                .alpha(0.2f)\r\n        )\r\n\r\n\r\n        Column(\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .padding(24.dp),\r\n            horizontalAlignment = Alignment.CenterHorizontally,\r\n            verticalArrangement = Arrangement.Center\r\n        ) {\r\n\r\n\r\n            Text(\r\n                text = \"Welcome Back\",\r\n                color = MaterialTheme.colorScheme.onTertiary,\r\n                fontSize = 80.sp,\r\n                fontWeight = FontWeight.Bold,\r\n                modifier = Modifier\r\n                    .padding(bottom = 40.dp)\r\n            )\r\n\r\n\r\n            val username = remember { mutableStateOf(\"\") }\r\n            TextField(\r\n                value = username.value,\r\n                onValueChange = { username.value = it },\r\n                label = { Text(\"Username\", color = MaterialTheme.colorScheme.onSurface) },\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .padding(bottom = 16.dp),\r\n                colors = TextFieldDefaults.colors(\r\n                    focusedContainerColor = MaterialTheme.colorScheme.surface,\r\n                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,\r\n                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,\r\n                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface\r\n                )\r\n            )\r\n\r\n\r\n            val password = remember { mutableStateOf(\"\") }\r\n            val passwordVisible = remember { mutableStateOf(false) }\r\n            TextField(\r\n                value = password.value,\r\n                onValueChange = { password.value = it },\r\n                label = { Text(\"Password\", color = MaterialTheme.colorScheme.onSurface) },\r\n                visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),\r\n                trailingIcon = {\r\n                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {\r\n                        Image(\r\n                            painter = if (passwordVisible.value) painterResource(R.drawable.visibility_off_24px) else painterResource(R.drawable.visibility_24px),\r\n                            contentDescription = if (passwordVisible.value) \"Hide password\" else \"Show password\"\r\n                        )\r\n                    }\r\n                },\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .padding(bottom = 16.dp),\r\n                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),\r\n                colors = TextFieldDefaults.colors(\r\n                    focusedContainerColor = MaterialTheme.colorScheme.surface,\r\n                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,\r\n                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,\r\n                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface\r\n                )\r\n            )\r\n\r\n\r\n            Button(\r\n                onClick = { /* Acción de Log In */ },\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .height(50.dp)\r\n                    .padding(bottom = 8.dp),\r\n                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onTertiaryContainer)\r\n            ) {\r\n                Text(text = \"Log In\", color = MaterialTheme.colorScheme.tertiaryContainer)\r\n            }\r\n\r\n\r\n\r\n            Spacer(modifier = Modifier.height(16.dp))\r\n\r\n\r\n            Column(\r\n                horizontalAlignment = Alignment.CenterHorizontally,\r\n                modifier = Modifier.fillMaxWidth()\r\n            ) {\r\n                Text(text = \"Don't have an account?\", color = MaterialTheme.colorScheme.onBackground)\r\n                Spacer(modifier = Modifier.width(4.dp))\r\n                TextButton(onClick = { /* Acción de Sign Up */ }) {\r\n                    Text(text = \"Sign Up\", color = MaterialTheme.colorScheme.onTertiaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nfun LoginScreenPreview() {\r\n    LoginScreen()\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt	(date 1730078739431)
+@@ -15,13 +15,47 @@
+ import androidx.compose.ui.text.input.KeyboardType
+ import androidx.compose.ui.text.input.PasswordVisualTransformation
+ import androidx.compose.ui.text.input.VisualTransformation
+-import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.unit.sp
++import androidx.lifecycle.viewmodel.compose.viewModel
+ import proyecto_moviles.uvg.edu.gt.R
++import proyecto_moviles.uvg.edu.gt.data.model.User
++import proyecto_moviles.uvg.edu.gt.presentacion.login.Login.LoginEvent
++import proyecto_moviles.uvg.edu.gt.presentacion.login.Login.LoginState
++
++@Composable
++fun LoginRoute() {
++    val login = UserApi.getUser().map {UserDTO->
++        User(
++            id = UserDTO.id,
++            email = UserDTO.email,
++            name = UserDTO.username
++        )
++    }
++
++    val state by viewModel.state.collectAsState()
++    LoginScreen(
++        state = LoginState,
++        onLoginClick = onLoginClick,
++        onNavigateToSignUp = onNavigateToSignUp
++    )
++}
+ 
+ @Composable
+-fun LoginScreen() {
++fun LoginScreen(
++    isLoading: Boolean,
++    loginSuccessful: Boolean,
++    onSuccessfulLogin: () -> Unit,
++    onNavigateToSignUp: () -> Unit,
++    onLoginClick: () -> Unit,
++) {
++
++    LaunchedEffect(key1 = loginSuccessful) {
++        if (loginSuccessful) {
++            onSuccessfulLogin()
++        }
++    }
++
+     Box(
+         modifier = Modifier
+             .fillMaxSize()
+@@ -114,12 +148,13 @@
+ 
+ 
+             Button(
+-                onClick = { /* Acción de Log In */ },
++                onClick = onLoginClick,
+                 modifier = Modifier
+                     .fillMaxWidth()
+                     .height(50.dp)
+                     .padding(bottom = 8.dp),
+                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onTertiaryContainer)
++                enabled = !isLoading
+             ) {
+                 Text(text = "Log In", color = MaterialTheme.colorScheme.tertiaryContainer)
+             }
+@@ -135,7 +170,7 @@
+             ) {
+                 Text(text = "Don't have an account?", color = MaterialTheme.colorScheme.onBackground)
+                 Spacer(modifier = Modifier.width(4.dp))
+-                TextButton(onClick = { /* Acción de Sign Up */ }) {
++                TextButton(onClick = onNavigateToSignUp) {
+                     Text(text = "Sign Up", color = MaterialTheme.colorScheme.onTertiaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))
+                 }
+             }
+@@ -143,8 +178,3 @@
+     }
+ }
+ 
+-@Preview(showBackground = true)
+-@Composable
+-fun LoginScreenPreview() {
+-    LoginScreen()
+-}
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package proyecto_moviles.uvg.edu.gt.Calendar\r\n\r\nimport android.widget.CalendarView\r\nimport androidx.compose.animation.*\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.automirrored.filled.ArrowBack\r\nimport androidx.compose.material.icons.automirrored.filled.List\r\nimport androidx.compose.material.icons.filled.*\r\nimport androidx.compose.material3.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.viewinterop.AndroidView\r\nimport java.text.SimpleDateFormat\r\nimport java.util.*\r\n\r\n@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)\r\n@Composable\r\nfun CalendarScreen() {\r\n    var selectedDate by remember { mutableStateOf(\"\") }\r\n\r\n    val formatter = SimpleDateFormat(\"EEE, MMM dd\", Locale.getDefault())\r\n\r\n    Scaffold(\r\n        topBar = {\r\n            TopAppBar(\r\n                title = { Text(\"Calendar\") },\r\n                navigationIcon = {\r\n                    IconButton(onClick = { /* Acción para retroceder */ }) {\r\n                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = \"Back\")\r\n                    }\r\n                },\r\n                colors = TopAppBarDefaults.topAppBarColors(\r\n                    containerColor = MaterialTheme.colorScheme.primaryContainer,\r\n                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer\r\n                )\r\n            )\r\n        },\r\n        content = { paddingValues ->\r\n            Column(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(paddingValues)\r\n                    .padding(16.dp)\r\n                    .background(MaterialTheme.colorScheme.surface)\r\n            ) {\r\n\r\n                AnimatedContent(\r\n                    targetState = selectedDate,\r\n                    transitionSpec = {\r\n                        (fadeIn(animationSpec = tween(300)) + slideInVertically()).togetherWith(\r\n                            fadeOut(animationSpec = tween(300)) + slideOutVertically()\r\n                        )\r\n                    }, label = \"\"\r\n                ) { targetDate ->\r\n                    Text(\r\n                        text = targetDate.ifEmpty { \"Mon, Aug 17\" },\r\n                        style = MaterialTheme.typography.headlineMedium,\r\n                        color = MaterialTheme.colorScheme.onSurface,\r\n                        modifier = Modifier.padding(bottom = 16.dp)\r\n                    )\r\n                }\r\n\r\n                Card(\r\n                    modifier = Modifier\r\n                        .fillMaxWidth()\r\n                        .padding(bottom = 16.dp),\r\n                    colors = CardDefaults.cardColors(\r\n                        containerColor = MaterialTheme.colorScheme.primaryContainer\r\n                    ),\r\n                    elevation = CardDefaults.cardElevation(4.dp)\r\n                ) {\r\n                    AndroidView(\r\n                        factory = { CalendarView(it).apply {\r\n                            setOnDateChangeListener { _, year, month, dayOfMonth ->\r\n                                val calendar = Calendar.getInstance()\r\n                                calendar.set(year, month, dayOfMonth)\r\n                                selectedDate = formatter.format(calendar.time)\r\n                            }\r\n                        }},\r\n                        modifier = Modifier\r\n                            .fillMaxWidth()\r\n                            .padding(8.dp)\r\n                    )\r\n                }\r\n\r\n                AnimatedVisibility(\r\n                    visible = selectedDate.isNotEmpty(),\r\n                    enter = fadeIn() + expandVertically(),\r\n                    exit = fadeOut() + shrinkVertically()\r\n                ) {\r\n                    EventList(\r\n                        events = listOf(\r\n                            \"Project 4\" to \"Task: Hello World\",\r\n                            \"Math exam\" to \"Study\"\r\n                        )\r\n                    )\r\n                }\r\n            }\r\n        },\r\n        bottomBar = {\r\n            NavigationBar(\r\n                containerColor = MaterialTheme.colorScheme.primaryContainer,\r\n            ) {\r\n                NavigationBarItem(\r\n                    icon = {\r\n                        Icon(\r\n                            Icons.AutoMirrored.Filled.List,\r\n                            contentDescription = \"To do list\"\r\n                        )\r\n                    },\r\n                    label = { Text(\"To do list\") },\r\n                    selected = false,\r\n                    onClick = { /*TODO*/ }\r\n                )\r\n                NavigationBarItem(\r\n                    icon = { Icon(Icons.Filled.CalendarToday, contentDescription = \"Calendar\") },\r\n                    label = { Text(\"Calendar\") },\r\n                    selected = true,\r\n                    onClick = { /*TODO*/ }\r\n                )\r\n                NavigationBarItem(\r\n                    icon = { Icon(Icons.Filled.Person, contentDescription = \"Profile\") },\r\n                    label = { Text(\"Profile\") },\r\n                    selected = false,\r\n                    onClick = { /*TODO*/ }\r\n                )\r\n            }\r\n        }\r\n    )\r\n}\r\n\r\n@Composable\r\nfun EventItem(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, description: String) {\r\n    Row(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(vertical = 8.dp),\r\n        verticalAlignment = Alignment.CenterVertically\r\n    ) {\r\n        Icon(\r\n            imageVector = icon,\r\n            contentDescription = null,\r\n            tint = MaterialTheme.colorScheme.primary,\r\n            modifier = Modifier.size(48.dp)\r\n        )\r\n        Spacer(modifier = Modifier.width(16.dp))\r\n        Column {\r\n            Text(\r\n                text = title,\r\n                style = MaterialTheme.typography.bodyLarge,\r\n                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,\r\n                color = MaterialTheme.colorScheme.onSurface\r\n            )\r\n            Text(\r\n                text = description,\r\n                style = MaterialTheme.typography.bodySmall,\r\n                color = MaterialTheme.colorScheme.onSurfaceVariant\r\n            )\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun EventList(events: List<Pair<String, String>>) {\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(16.dp)\r\n    ) {\r\n        events.forEach { event ->\r\n            EventItem(icon = Icons.Default.Notifications, title = event.first, description = event.second)\r\n            Spacer(modifier = Modifier.height(16.dp))\r\n        }\r\n    }\r\n}\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nfun CalendarScreenPreview() {\r\n    CalendarScreen()\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt	(date 1729999444654)
+@@ -16,12 +16,15 @@
+ import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.viewinterop.AndroidView
++import androidx.navigation.NavController
+ import java.text.SimpleDateFormat
+ import java.util.*
+ 
++
++
+ @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
+ @Composable
+-fun CalendarScreen() {
++fun CalendarScreen( navController: NavController ,onNavigateToToDo: () -> Unit, onNavigateToProfile: () -> Unit, onNavigateToHome: () -> Unit) {
+     var selectedDate by remember { mutableStateOf("") }
+ 
+     val formatter = SimpleDateFormat("EEE, MMM dd", Locale.getDefault())
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package proyecto_moviles.uvg.edu.gt.Login\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt	(date 1730077071376)
+@@ -1,2 +1,32 @@
+-package proyecto_moviles.uvg.edu.gt.Login
++package proyecto_moviles.uvg.edu.gt.navigation
++
++import androidx.navigation.NavGraphBuilder
++import androidx.navigation.compose.composable
++import kotlinx.serialization.Serializable
++import proyecto_moviles.uvg.edu.gt.Sing_up.SignUpDestination
++import proyecto_moviles.uvg.edu.gt.login.LoginRoute
++
++
++@Serializable
++data object LoginDestination
+ 
++fun NavGraphBuilder.loginScreen(
++    onLoginClick: () -> Unit
++) {
++    composable<LoginDestination> {
++        LoginRoute(
++            onSuccessfulLogin = onLoginClick,
++        )
++    }
++}
++
++fun NavGraphBuilder.signUpScreen(
++    onSignUpClick: () -> Unit
++) {
++    composable<SignUpDestination> {
++        SignUpRoute(
++            onSuccessfulSignUp = onSignUpClick,
++            onNavigateToLogin = onNavigateToLogin
++        )
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package proyecto_moviles.uvg.edu.gt.Calendar\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt	(date 1730076972544)
+@@ -1,2 +1,25 @@
+ package proyecto_moviles.uvg.edu.gt.Calendar
+ 
++import androidx.navigation.NavController
++import kotlinx.serialization.Serializable
++
++@Serializable
++data class CalendarDestination(
++    val id : Int
++)
++
++fun NavController.navigateToCalendar(
++    eventID: Int
++) {
++    this.navigate(CalendarDestination(id = eventID))
++}
++
++fun NavController.Calendar(
++    onNavigationBack: () -> Unit
++) {
++    composable<CalendarDestination> {
++        CalendarRoute(
++            onNavigationBack = onNavigationBack
++        )
++    }
++}
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AndroidLayouts\">\r\n    <shared>\r\n      <config />\r\n    </shared>\r\n  </component>\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"NONE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"dfea3bbe-0df6-440d-a9eb-50966e080d13\" name=\"Changes\" comment=\"place holders\">\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/checksums/md5-checksums.bin\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/checksums/md5-checksums.bin\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/checksums/sha1-checksums.bin\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/checksums/sha1-checksums.bin\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.bin\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.bin\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.lock\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.lock\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.gradle/file-system.probe\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.gradle/file-system.probe\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/modules/app/Proyecto-moviles.app.iml\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/build.gradle.kts\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/build.gradle.kts\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/AndroidManifest.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/AndroidManifest.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeNavigation.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeNavigation.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeScreen.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeScreen.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioScreen.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioScreen.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListScreen.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListScreen.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/gradle/libs.versions.toml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/gradle/libs.versions.toml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ClangdSettings\">\r\n    <option name=\"formatViaClangd\" value=\"false\" />\r\n  </component>\r\n  <component name=\"ExecutionTargetManager\" SELECTED_TARGET=\"device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\\Users\\paula\\.android\\avd\\Pixel_4a_API_34.avd)]\" />\r\n  <component name=\"ExternalProjectsData\">\r\n    <projectState path=\"$PROJECT_DIR$\">\r\n      <ProjectState />\r\n    </projectState>\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Kotlin Class\" />\r\n        <option value=\"Kotlin File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\"><![CDATA[{\r\n  \"history\": [\r\n    {\r\n      \"state\": \"OPEN\",\r\n      \"author\": \"JavierC22153\"\r\n    },\r\n    {\r\n      \"state\": \"OPEN\"\r\n    }\r\n  ],\r\n  \"lastFilter\": {\r\n    \"state\": \"OPEN\"\r\n  }\r\n}]]></component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/cafetowake/Proyecto-moviles.git&quot;,\r\n    &quot;accountId&quot;: &quot;d387766f-c371-4d7d-9634-196def993a19&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2lz0YQZ7cDAuJCTbcLeofLB7YSG\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;Compose Preview.CalendarScreenPreview (1).executor&quot;: &quot;Run&quot;,\r\n    &quot;Compose Preview.CalendarScreenPreview.executor&quot;: &quot;Run&quot;,\r\n    &quot;Compose Preview.LoginScreenPreview.executor&quot;: &quot;Run&quot;,\r\n    &quot;Compose Preview.SignUpScreenPreview.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,\r\n    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,\r\n    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,\r\n    &quot;full.screen.before.presentation.mode&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Dependencies&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;\r\n  },\r\n  &quot;keyToStringList&quot;: {\r\n    &quot;kotlin-gradle-user-dirs&quot;: [\r\n      &quot;C:\\\\Users\\\\paula\\\\.gradle&quot;\r\n    ]\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\" selected=\"Compose Preview.CalendarScreenPreview\">\r\n    <configuration name=\"app\" type=\"AndroidRunConfigurationType\" factoryName=\"Android App\">\r\n      <module name=\"Proyecto-moviles.app.main\" />\r\n      <option name=\"DEPLOY\" value=\"true\" />\r\n      <option name=\"DEPLOY_APK_FROM_BUNDLE\" value=\"false\" />\r\n      <option name=\"DEPLOY_AS_INSTANT\" value=\"false\" />\r\n      <option name=\"ARTIFACT_NAME\" value=\"\" />\r\n      <option name=\"PM_INSTALL_OPTIONS\" value=\"\" />\r\n      <option name=\"ALL_USERS\" value=\"false\" />\r\n      <option name=\"ALWAYS_INSTALL_WITH_PM\" value=\"false\" />\r\n      <option name=\"CLEAR_APP_STORAGE\" value=\"false\" />\r\n      <option name=\"DYNAMIC_FEATURES_DISABLED_LIST\" value=\"\" />\r\n      <option name=\"ACTIVITY_EXTRA_FLAGS\" value=\"\" />\r\n      <option name=\"MODE\" value=\"default_activity\" />\r\n      <option name=\"CLEAR_LOGCAT\" value=\"false\" />\r\n      <option name=\"SHOW_LOGCAT_AUTOMATICALLY\" value=\"false\" />\r\n      <option name=\"TARGET_SELECTION_MODE\" value=\"DEVICE_AND_SNAPSHOT_COMBO_BOX\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_CONFIGURATION_ID\" value=\"-1\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_PROJECT_ID\" value=\"\" />\r\n      <option name=\"DEBUGGER_TYPE\" value=\"Auto\" />\r\n      <Auto>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Auto>\r\n      <Hybrid>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Hybrid>\r\n      <Java>\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Java>\r\n      <Native>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Native>\r\n      <Profilers>\r\n        <option name=\"ADVANCED_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_CONFIGURATION_NAME\" value=\"Java/Kotlin Method Sample (legacy)\" />\r\n        <option name=\"STARTUP_NATIVE_MEMORY_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"NATIVE_MEMORY_SAMPLE_RATE_BYTES\" value=\"2048\" />\r\n      </Profilers>\r\n      <option name=\"DEEP_LINK\" value=\"\" />\r\n      <option name=\"ACTIVITY_CLASS\" value=\"\" />\r\n      <option name=\"SEARCH_ACTIVITY_IN_GLOBAL_SCOPE\" value=\"false\" />\r\n      <option name=\"SKIP_ACTIVITY_VALIDATION\" value=\"false\" />\r\n      <method v=\"2\">\r\n        <option name=\"Android.Gradle.BeforeRunTask\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"CalendarScreenPreview (1)\" type=\"ComposePreviewRunConfiguration\" temporary=\"true\">\r\n      <module name=\"Proyecto-moviles.app\" />\r\n      <option name=\"DEPLOY\" value=\"true\" />\r\n      <option name=\"DEPLOY_APK_FROM_BUNDLE\" value=\"false\" />\r\n      <option name=\"DEPLOY_AS_INSTANT\" value=\"false\" />\r\n      <option name=\"ARTIFACT_NAME\" value=\"\" />\r\n      <option name=\"PM_INSTALL_OPTIONS\" value=\"\" />\r\n      <option name=\"ALL_USERS\" value=\"false\" />\r\n      <option name=\"ALWAYS_INSTALL_WITH_PM\" value=\"false\" />\r\n      <option name=\"CLEAR_APP_STORAGE\" value=\"false\" />\r\n      <option name=\"DYNAMIC_FEATURES_DISABLED_LIST\" value=\"\" />\r\n      <option name=\"ACTIVITY_EXTRA_FLAGS\" value=\"--es composable CalanderScreenKt.CalendarScreenPreview\" />\r\n      <option name=\"MODE\" value=\"specific_activity\" />\r\n      <option name=\"CLEAR_LOGCAT\" value=\"false\" />\r\n      <option name=\"SHOW_LOGCAT_AUTOMATICALLY\" value=\"false\" />\r\n      <option name=\"TARGET_SELECTION_MODE\" value=\"SHOW_DIALOG\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_CONFIGURATION_ID\" value=\"-1\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_PROJECT_ID\" value=\"\" />\r\n      <option name=\"DEBUGGER_TYPE\" value=\"Auto\" />\r\n      <Auto>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Auto>\r\n      <Hybrid>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Hybrid>\r\n      <Java>\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Java>\r\n      <Native>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Native>\r\n      <Profilers>\r\n        <option name=\"ADVANCED_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_CONFIGURATION_NAME\" value=\"Java/Kotlin Method Sample (legacy)\" />\r\n        <option name=\"STARTUP_NATIVE_MEMORY_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"NATIVE_MEMORY_SAMPLE_RATE_BYTES\" value=\"2048\" />\r\n      </Profilers>\r\n      <option name=\"DEEP_LINK\" value=\"\" />\r\n      <option name=\"ACTIVITY_CLASS\" value=\"androidx.compose.ui.tooling.PreviewActivity\" />\r\n      <option name=\"SEARCH_ACTIVITY_IN_GLOBAL_SCOPE\" value=\"true\" />\r\n      <option name=\"SKIP_ACTIVITY_VALIDATION\" value=\"false\" />\r\n      <compose-preview-run-configuration composable-fqn=\"CalanderScreenKt.CalendarScreenPreview\" />\r\n      <method v=\"2\">\r\n        <option name=\"Android.Gradle.BeforeRunTask\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"CalendarScreenPreview\" type=\"ComposePreviewRunConfiguration\" temporary=\"true\">\r\n      <module name=\"Proyecto-moviles.app\" />\r\n      <option name=\"DEPLOY\" value=\"true\" />\r\n      <option name=\"DEPLOY_APK_FROM_BUNDLE\" value=\"false\" />\r\n      <option name=\"DEPLOY_AS_INSTANT\" value=\"false\" />\r\n      <option name=\"ARTIFACT_NAME\" value=\"\" />\r\n      <option name=\"PM_INSTALL_OPTIONS\" value=\"\" />\r\n      <option name=\"ALL_USERS\" value=\"false\" />\r\n      <option name=\"ALWAYS_INSTALL_WITH_PM\" value=\"false\" />\r\n      <option name=\"CLEAR_APP_STORAGE\" value=\"false\" />\r\n      <option name=\"DYNAMIC_FEATURES_DISABLED_LIST\" value=\"\" />\r\n      <option name=\"ACTIVITY_EXTRA_FLAGS\" value=\"--es composable proyecto_moviles.uvg.edu.gt.Calendar.CalanderScreenKt.CalendarScreenPreview\" />\r\n      <option name=\"MODE\" value=\"specific_activity\" />\r\n      <option name=\"CLEAR_LOGCAT\" value=\"false\" />\r\n      <option name=\"SHOW_LOGCAT_AUTOMATICALLY\" value=\"false\" />\r\n      <option name=\"TARGET_SELECTION_MODE\" value=\"SHOW_DIALOG\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_CONFIGURATION_ID\" value=\"-1\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_PROJECT_ID\" value=\"\" />\r\n      <option name=\"DEBUGGER_TYPE\" value=\"Auto\" />\r\n      <Auto>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Auto>\r\n      <Hybrid>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Hybrid>\r\n      <Java>\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Java>\r\n      <Native>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Native>\r\n      <Profilers>\r\n        <option name=\"ADVANCED_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_CONFIGURATION_NAME\" value=\"Java/Kotlin Method Sample (legacy)\" />\r\n        <option name=\"STARTUP_NATIVE_MEMORY_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"NATIVE_MEMORY_SAMPLE_RATE_BYTES\" value=\"2048\" />\r\n      </Profilers>\r\n      <option name=\"DEEP_LINK\" value=\"\" />\r\n      <option name=\"ACTIVITY_CLASS\" value=\"androidx.compose.ui.tooling.PreviewActivity\" />\r\n      <option name=\"SEARCH_ACTIVITY_IN_GLOBAL_SCOPE\" value=\"true\" />\r\n      <option name=\"SKIP_ACTIVITY_VALIDATION\" value=\"false\" />\r\n      <compose-preview-run-configuration composable-fqn=\"proyecto_moviles.uvg.edu.gt.Calendar.CalanderScreenKt.CalendarScreenPreview\" />\r\n      <method v=\"2\">\r\n        <option name=\"Android.Gradle.BeforeRunTask\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"LoginScreenPreview\" type=\"ComposePreviewRunConfiguration\" temporary=\"true\">\r\n      <module name=\"Proyecto-moviles.app\" />\r\n      <option name=\"DEPLOY\" value=\"true\" />\r\n      <option name=\"DEPLOY_APK_FROM_BUNDLE\" value=\"false\" />\r\n      <option name=\"DEPLOY_AS_INSTANT\" value=\"false\" />\r\n      <option name=\"ARTIFACT_NAME\" value=\"\" />\r\n      <option name=\"PM_INSTALL_OPTIONS\" value=\"\" />\r\n      <option name=\"ALL_USERS\" value=\"false\" />\r\n      <option name=\"ALWAYS_INSTALL_WITH_PM\" value=\"false\" />\r\n      <option name=\"CLEAR_APP_STORAGE\" value=\"false\" />\r\n      <option name=\"DYNAMIC_FEATURES_DISABLED_LIST\" value=\"\" />\r\n      <option name=\"ACTIVITY_EXTRA_FLAGS\" value=\"--es composable proyecto_moviles.uvg.edu.gt.login.LoginScreenKt.LoginScreenPreview\" />\r\n      <option name=\"MODE\" value=\"specific_activity\" />\r\n      <option name=\"CLEAR_LOGCAT\" value=\"false\" />\r\n      <option name=\"SHOW_LOGCAT_AUTOMATICALLY\" value=\"false\" />\r\n      <option name=\"TARGET_SELECTION_MODE\" value=\"SHOW_DIALOG\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_CONFIGURATION_ID\" value=\"-1\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_PROJECT_ID\" value=\"\" />\r\n      <option name=\"DEBUGGER_TYPE\" value=\"Auto\" />\r\n      <Auto>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Auto>\r\n      <Hybrid>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Hybrid>\r\n      <Java>\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Java>\r\n      <Native>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Native>\r\n      <Profilers>\r\n        <option name=\"ADVANCED_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_CONFIGURATION_NAME\" value=\"Java/Kotlin Method Sample (legacy)\" />\r\n        <option name=\"STARTUP_NATIVE_MEMORY_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"NATIVE_MEMORY_SAMPLE_RATE_BYTES\" value=\"2048\" />\r\n      </Profilers>\r\n      <option name=\"DEEP_LINK\" value=\"\" />\r\n      <option name=\"ACTIVITY_CLASS\" value=\"androidx.compose.ui.tooling.PreviewActivity\" />\r\n      <option name=\"SEARCH_ACTIVITY_IN_GLOBAL_SCOPE\" value=\"true\" />\r\n      <option name=\"SKIP_ACTIVITY_VALIDATION\" value=\"false\" />\r\n      <compose-preview-run-configuration composable-fqn=\"proyecto_moviles.uvg.edu.gt.login.LoginScreenKt.LoginScreenPreview\" />\r\n      <method v=\"2\">\r\n        <option name=\"Android.Gradle.BeforeRunTask\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"SignUpScreenPreview\" type=\"ComposePreviewRunConfiguration\" temporary=\"true\">\r\n      <module name=\"Proyecto-moviles.app\" />\r\n      <option name=\"DEPLOY\" value=\"true\" />\r\n      <option name=\"DEPLOY_APK_FROM_BUNDLE\" value=\"false\" />\r\n      <option name=\"DEPLOY_AS_INSTANT\" value=\"false\" />\r\n      <option name=\"ARTIFACT_NAME\" value=\"\" />\r\n      <option name=\"PM_INSTALL_OPTIONS\" value=\"\" />\r\n      <option name=\"ALL_USERS\" value=\"false\" />\r\n      <option name=\"ALWAYS_INSTALL_WITH_PM\" value=\"false\" />\r\n      <option name=\"CLEAR_APP_STORAGE\" value=\"false\" />\r\n      <option name=\"DYNAMIC_FEATURES_DISABLED_LIST\" value=\"\" />\r\n      <option name=\"ACTIVITY_EXTRA_FLAGS\" value=\"--es composable proyecto_moviles.uvg.edu.gt.Sign_up.SignUpScreenKt.SignUpScreenPreview\" />\r\n      <option name=\"MODE\" value=\"specific_activity\" />\r\n      <option name=\"CLEAR_LOGCAT\" value=\"false\" />\r\n      <option name=\"SHOW_LOGCAT_AUTOMATICALLY\" value=\"false\" />\r\n      <option name=\"TARGET_SELECTION_MODE\" value=\"SHOW_DIALOG\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_CONFIGURATION_ID\" value=\"-1\" />\r\n      <option name=\"SELECTED_CLOUD_MATRIX_PROJECT_ID\" value=\"\" />\r\n      <option name=\"DEBUGGER_TYPE\" value=\"Auto\" />\r\n      <Auto>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Auto>\r\n      <Hybrid>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Hybrid>\r\n      <Java>\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Java>\r\n      <Native>\r\n        <option name=\"USE_JAVA_AWARE_DEBUGGER\" value=\"false\" />\r\n        <option name=\"SHOW_STATIC_VARS\" value=\"true\" />\r\n        <option name=\"WORKING_DIR\" value=\"\" />\r\n        <option name=\"TARGET_LOGGING_CHANNELS\" value=\"lldb process:gdb-remote packets\" />\r\n        <option name=\"SHOW_OPTIMIZED_WARNING\" value=\"true\" />\r\n        <option name=\"ATTACH_ON_WAIT_FOR_DEBUGGER\" value=\"false\" />\r\n        <option name=\"DEBUG_SANDBOX_SDK\" value=\"false\" />\r\n      </Native>\r\n      <Profilers>\r\n        <option name=\"ADVANCED_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"STARTUP_CPU_PROFILING_CONFIGURATION_NAME\" value=\"Java/Kotlin Method Sample (legacy)\" />\r\n        <option name=\"STARTUP_NATIVE_MEMORY_PROFILING_ENABLED\" value=\"false\" />\r\n        <option name=\"NATIVE_MEMORY_SAMPLE_RATE_BYTES\" value=\"2048\" />\r\n      </Profilers>\r\n      <option name=\"DEEP_LINK\" value=\"\" />\r\n      <option name=\"ACTIVITY_CLASS\" value=\"androidx.compose.ui.tooling.PreviewActivity\" />\r\n      <option name=\"SEARCH_ACTIVITY_IN_GLOBAL_SCOPE\" value=\"true\" />\r\n      <option name=\"SKIP_ACTIVITY_VALIDATION\" value=\"false\" />\r\n      <compose-preview-run-configuration composable-fqn=\"proyecto_moviles.uvg.edu.gt.Sign_up.SignUpScreenKt.SignUpScreenPreview\" />\r\n      <method v=\"2\">\r\n        <option name=\"Android.Gradle.BeforeRunTask\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Compose Preview.CalendarScreenPreview\" />\r\n        <item itemvalue=\"Compose Preview.CalendarScreenPreview (1)\" />\r\n        <item itemvalue=\"Compose Preview.LoginScreenPreview\" />\r\n        <item itemvalue=\"Compose Preview.SignUpScreenPreview\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"dfea3bbe-0df6-440d-a9eb-50966e080d13\" name=\"Changes\" comment=\"\" />\r\n      <created>1726167644429</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1726167644429</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"cambio\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1727150178965</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1727150178965</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"cambio\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1729744867432</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1729744867432</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"orden\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1729835366365</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1729835366365</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"place holders\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1729836045671</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1729836045671</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"5\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Inicio\" />\r\n    <MESSAGE value=\"cambio\" />\r\n    <MESSAGE value=\"orden\" />\r\n    <MESSAGE value=\"place holders\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"place holders\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/.idea/workspace.xml	(date 1730061302389)
+@@ -9,31 +9,42 @@
+     <option name="autoReloadType" value="NONE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="dfea3bbe-0df6-440d-a9eb-50966e080d13" name="Changes" comment="place holders">
++    <list default="true" id="dfea3bbe-0df6-440d-a9eb-50966e080d13" name="Changes" comment="cambio">
++      <change afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/8.7/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/checksums/md5-checksums.bin" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/8.7/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/checksums/sha1-checksums.bin" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.bin" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.lock" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/modules/app/Proyecto-moviles.app.iml" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/api/HttpClientFactory.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/model/guardarpuesto.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/repository/guardarpuesto.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/source/guardarpuesto.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/domain/guardarpuesto.txt" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeNavigation.kt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeScreen.kt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/common/guardarpuesto.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpNavigation.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpScreen.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectNavigation.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectScreen.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioScreen.kt" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListScreen.kt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskNavigation.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsNavigation.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/guardarpuesto.txt" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -61,20 +72,20 @@
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+-  "history": [
++  <component name="GitHubPullRequestSearchHistory">{
++  &quot;history&quot;: [
+     {
+-      "state": "OPEN",
+-      "author": "JavierC22153"
++      &quot;state&quot;: &quot;OPEN&quot;,
++      &quot;author&quot;: &quot;JavierC22153&quot;
+     },
+     {
+-      "state": "OPEN"
++      &quot;state&quot;: &quot;OPEN&quot;
+     }
+   ],
+-  "lastFilter": {
+-    "state": "OPEN"
++  &quot;lastFilter&quot;: {
++    &quot;state&quot;: &quot;OPEN&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="GithubPullRequestsUISettings">{
+   &quot;selectedUrlAndAccountId&quot;: {
+     &quot;url&quot;: &quot;https://github.com/cafetowake/Proyecto-moviles.git&quot;,
+@@ -505,14 +516,22 @@
+       <option name="project" value="LOCAL" />
+       <updated>1729836045671</updated>
+     </task>
+-    <option name="localTasksCounter" value="5" />
++    <task id="LOCAL-00005" summary="cambio">
++      <option name="closed" value="true" />
++      <created>1729995854512</created>
++      <option name="number" value="00005" />
++      <option name="presentableId" value="LOCAL-00005" />
++      <option name="project" value="LOCAL" />
++      <updated>1729995854512</updated>
++    </task>
++    <option name="localTasksCounter" value="6" />
+     <servers />
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="Inicio" />
+-    <MESSAGE value="cambio" />
+     <MESSAGE value="orden" />
+     <MESSAGE value="place holders" />
+-    <option name="LAST_COMMIT_MESSAGE" value="place holders" />
++    <MESSAGE value="cambio" />
++    <option name="LAST_COMMIT_MESSAGE" value="cambio" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n    alias(libs.plugins.jetbrains.kotlin.android)\r\n    alias(libs.plugins.jetbrains.kotlin.serialization)\r\n    id(\"kotlin-kapt\")\r\n}\r\n\r\nandroid {\r\n    namespace = \"proyecto_moviles.uvg.edu.gt\"\r\n    compileSdk = 34\r\n\r\n    defaultConfig {\r\n        applicationId = \"proyecto_moviles.uvg.edu.gt\"\r\n        minSdk = 26\r\n        targetSdk = 34\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n        vectorDrawables {\r\n            useSupportLibrary = true\r\n        }\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_1_8\r\n        targetCompatibility = JavaVersion.VERSION_1_8\r\n    }\r\n    kotlinOptions {\r\n        jvmTarget = \"1.8\"\r\n    }\r\n    buildFeatures {\r\n        compose = true\r\n    }\r\n    composeOptions {\r\n        kotlinCompilerExtensionVersion = \"1.5.1\"\r\n    }\r\n    packaging {\r\n        resources {\r\n            excludes += \"/META-INF/{AL2.0,LGPL2.1}\"\r\n        }\r\n    }\r\n\r\n    kapt {\r\n        arguments {\r\n            arg(\"room.schemaLocation\", \"$projectDir/schemas\")\r\n        }\r\n    }\r\n}\r\n\r\ndependencies {\r\n    implementation(libs.androidx.core.ktx)\r\n    implementation(libs.androidx.lifecycle.runtime.ktx)\r\n    implementation(libs.androidx.activity.compose)\r\n    implementation(platform(libs.androidx.compose.bom))\r\n    implementation(libs.androidx.ui)\r\n    implementation(libs.androidx.ui.graphics)\r\n    implementation(libs.androidx.ui.tooling.preview)\r\n    implementation(libs.androidx.material3)\r\n    implementation(libs.androidx.appcompat)\r\n    implementation(libs.androidx.cardview)\r\n    implementation(libs.androidx.compose.material)\r\n    implementation(libs.androidx.compose.material.icons.core)\r\n    implementation(libs.androidx.compose.material.icons.extended)\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.androidx.junit)\r\n    androidTestImplementation(libs.androidx.espresso.core)\r\n    androidTestImplementation(platform(libs.androidx.compose.bom))\r\n    androidTestImplementation(libs.androidx.ui.test.junit4)\r\n    debugImplementation(libs.androidx.ui.tooling)\r\n    debugImplementation(libs.androidx.ui.test.manifest)\r\n    implementation(libs.androidx.compose.navigation)\r\n    implementation(libs.kotlinx.serialization.json)\r\n    implementation(libs.bundles.ktor)\r\n    implementation(libs.androidx.datastore.preferences)\r\n    implementation(libs.androidx.splashscreen)\r\n    implementation(libs.androidx.room.runtime)\r\n    kapt(libs.androidx.room.compiler)\r\n    implementation(libs.androidx.room.ktx)\r\n    implementation(libs.bundles.ktor)\r\n    implementation(libs.bundles.coil)\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/app/build.gradle.kts	(date 1730085227315)
+@@ -66,11 +66,14 @@
+     implementation(libs.androidx.ui.graphics)
+     implementation(libs.androidx.ui.tooling.preview)
+     implementation(libs.androidx.material3)
+-    implementation(libs.androidx.appcompat)
+-    implementation(libs.androidx.cardview)
+-    implementation(libs.androidx.compose.material)
+-    implementation(libs.androidx.compose.material.icons.core)
++    implementation(libs.androidx.appcompat) 
++    implementation(libs.androidx.cardview) 
++    implementation(libs.androidx.compose.material) 
++    implementation(libs.androidx.compose.material.icons.core) 
+     implementation(libs.androidx.compose.material.icons.extended)
++    implementation(libs.androidx.espresso.core)
++    implementation(libs.androidx.espresso.core)
++    implementation(libs.androidx.ui.desktop)
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.androidx.junit)
+     androidTestImplementation(libs.androidx.espresso.core)
+@@ -88,5 +91,7 @@
+     implementation(libs.androidx.room.ktx)
+     implementation(libs.bundles.ktor)
+     implementation(libs.bundles.coil)
++    implementation (libs.hilt.android)
++    kapt (libs.dagger.hilt.compiler)
+ }
+ 
+Index: app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeNavigation.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeNavigation.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeNavigation.kt
+rename from app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeNavigation.kt
+rename to app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeNavigation.kt
+--- a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeNavigation.kt	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeNavigation.kt	(date 1729999444734)
+@@ -1,2 +1,1 @@
+ package proyecto_moviles.uvg.edu.gt.Home
+-
+Index: gradle/libs.versions.toml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>[versions]\r\nagp = \"8.6.1\"\r\nkotlin = \"1.9.0\"\r\ncoreKtx = \"1.13.1\"\r\njunit = \"4.13.2\"\r\njunitVersion = \"1.2.1\"\r\nespressoCore = \"3.6.1\"\r\nlifecycleRuntimeKtx = \"2.8.6\"\r\nactivityCompose = \"1.9.3\"\r\ncomposeBom = \"2024.10.00\"\r\nnavigationCompose = \"2.8.3\"\r\nkotlinSerialization = \"1.6.3\"\r\nappcompat = \"1.7.0\"\r\ncardview = \"1.0.0\"\r\ndataStore = \"1.1.1\"\r\nsplashScreen = \"1.0.1\"\r\nroom = \"2.6.1\"\r\nktor = \"2.3.12\"\r\ncoil = \"3.0.0-rc01\"\r\n\r\n[libraries]\r\nandroidx-core-ktx = { group = \"androidx.core\", name = \"core-ktx\", version.ref = \"coreKtx\" }\r\njunit = { group = \"junit\", name = \"junit\", version.ref = \"junit\" }\r\nandroidx-junit = { group = \"androidx.test.ext\", name = \"junit\", version.ref = \"junitVersion\" }\r\nandroidx-espresso-core = { group = \"androidx.test.espresso\", name = \"espresso-core\", version.ref = \"espressoCore\" }\r\nandroidx-lifecycle-runtime-ktx = { group = \"androidx.lifecycle\", name = \"lifecycle-runtime-ktx\", version.ref = \"lifecycleRuntimeKtx\" }\r\nandroidx-activity-compose = { group = \"androidx.activity\", name = \"activity-compose\", version.ref = \"activityCompose\" }\r\nandroidx-compose-bom = { group = \"androidx.compose\", name = \"compose-bom\", version.ref = \"composeBom\" }\r\nandroidx-ui = { group = \"androidx.compose.ui\", name = \"ui\" }\r\nandroidx-ui-graphics = { group = \"androidx.compose.ui\", name = \"ui-graphics\" }\r\nandroidx-ui-tooling = { group = \"androidx.compose.ui\", name = \"ui-tooling\" }\r\nandroidx-ui-tooling-preview = { group = \"androidx.compose.ui\", name = \"ui-tooling-preview\" }\r\nandroidx-ui-test-manifest = { group = \"androidx.compose.ui\", name = \"ui-test-manifest\" }\r\nandroidx-ui-test-junit4 = { group = \"androidx.compose.ui\", name = \"ui-test-junit4\" }\r\nandroidx-material3 = { group = \"androidx.compose.material3\", name = \"material3\" }\r\nandroidx-compose-navigation = { group = \"androidx.navigation\", name = \"navigation-compose\", version.ref =\"navigationCompose\"}\r\nkotlinx-serialization-json = { group = \"org.jetbrains.kotlinx\", name = \"kotlinx-serialization-json\", version.ref = \"kotlinSerialization\" }\r\nandroidx-datastore-preferences = { group = \"androidx.datastore\", name = \"datastore-preferences\", version.ref = \"dataStore\"}\r\nandroidx-splashscreen = { group = \"androidx.core\", name = \"core-splashscreen\", version.ref = \"splashScreen\" }\r\nandroidx-room-runtime = { group = \"androidx.room\", name = \"room-runtime\", version.ref = \"room\"}\r\nandroidx-room-compiler = { group = \"androidx.room\", name = \"room-compiler\", version.ref = \"room\"}\r\nandroidx-room-ktx = { module = \"androidx.room:room-ktx\", version.ref = \"room\" }\r\nktor-client-cio = { group = \"io.ktor\", name=\"ktor-client-cio\", version.ref = \"ktor\" }\r\nktor-client-content-negotiation = { group = \"io.ktor\", name=\"ktor-client-content-negotiation\", version.ref = \"ktor\" }\r\nktor-client-core = { group = \"io.ktor\", name=\"ktor-client-core\", version.ref = \"ktor\" }\r\nktor-client-logging = { group = \"io.ktor\", name=\"ktor-client-logging\", version.ref = \"ktor\" }\r\nktor-serialization-kotlinx-json = { group = \"io.ktor\", name=\"ktor-serialization-kotlinx-json\", version.ref = \"ktor\" }\r\ncoil-compose = { group = \"io.coil-kt.coil3\", name = \"coil-compose\", version.ref = \"coil\" }\r\ncoil-network = { group = \"io.coil-kt.coil3\", name = \"coil-network-okhttp\", version.ref = \"coil\" }\r\nandroidx-appcompat = { group = \"androidx.appcompat\", name = \"appcompat\", version.ref = \"appcompat\" }\r\nandroidx-cardview = { group = \"androidx.cardview\", name = \"cardview\", version.ref = \"cardview\" }\r\nandroidx-compose-material-icons-core = { module = \"androidx.compose.material:material-icons-core\", version = \"1.7.4\" }\r\nandroidx-compose-material-icons-extended = { module = \"androidx.compose.material:material-icons-extended\", version = \"1.7.4\" }\r\nandroidx-compose-material = { module = \"androidx.compose.material:material\", version = \"1.7.4\" }\r\n\r\n\r\n[plugins]\r\nandroid-application = { id = \"com.android.application\", version.ref = \"agp\" }\r\njetbrains-kotlin-android = { id = \"org.jetbrains.kotlin.android\", version.ref = \"kotlin\" }\r\njetbrains-kotlin-serialization = { id = \"org.jetbrains.kotlin.plugin.serialization\", version.ref = \"kotlin\" }\r\n\r\n[bundles]\r\nktor = [\r\n    \"ktor-client-cio\",\r\n    \"ktor-client-content-negotiation\",\r\n    \"ktor-client-core\",\r\n    \"ktor-client-logging\",\r\n    \"ktor-serialization-kotlinx-json\"\r\n]\r\ncoil = [\r\n    \"coil-compose\",\r\n    \"coil-network\"\r\n]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
+--- a/gradle/libs.versions.toml	(revision 95313717cd7a2c3c3d1a38c8145b329d1ba21daa)
++++ b/gradle/libs.versions.toml	(date 1730085227299)
+@@ -1,5 +1,7 @@
+ [versions]
+ agp = "8.6.1"
++hiltAndroid = "2.50"
++hiltCompiler = "2.50"
+ kotlin = "1.9.0"
+ coreKtx = "1.13.1"
+ junit = "4.13.2"
+@@ -17,9 +19,12 @@
+ room = "2.6.1"
+ ktor = "2.3.12"
+ coil = "3.0.0-rc01"
++uiDesktop = "1.7.0"
+ 
+ [libraries]
+ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
++dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
++hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+ junit = { group = "junit", name = "junit", version.ref = "junit" }
+ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+@@ -52,6 +57,7 @@
+ androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version = "1.7.4" }
+ androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version = "1.7.4" }
+ androidx-compose-material = { module = "androidx.compose.material:material", version = "1.7.4" }
++androidx-ui-desktop = { group = "androidx.compose.ui", name = "ui-desktop", version.ref = "uiDesktop" }
+ 
+ 
+ [plugins]
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/repository/guardarpuesto.txt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/repository/guardarpuesto.txt
+deleted file mode 100644
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/guardarpuesto.txt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/guardarpuesto.txt
+deleted file mode 100644
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/common/guardarpuesto.txt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/common/guardarpuesto.txt
+deleted file mode 100644
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/model/guardarpuesto.txt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/model/guardarpuesto.txt
+deleted file mode 100644
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/source/guardarpuesto.txt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/source/guardarpuesto.txt
+deleted file mode 100644
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/domain/guardarpuesto.txt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/domain/guardarpuesto.txt
+deleted file mode 100644
+diff --git a/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeScreen.kt b/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeScreen.kt
+rename from app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeScreen.kt
+rename to app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeScreen.kt

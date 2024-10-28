@@ -15,17 +15,47 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import proyecto_moviles.uvg.edu.gt.R
+import proyecto_moviles.uvg.edu.gt.data.model.User
+import proyecto_moviles.uvg.edu.gt.presentacion.login.Login.LoginEvent
+import proyecto_moviles.uvg.edu.gt.presentacion.login.Login.LoginState
+
+@Composable
+fun LoginRoute() {
+    val login = UserApi.getUser().map {UserDTO->
+        User(
+            id = UserDTO.id,
+            email = UserDTO.email,
+            name = UserDTO.username
+        )
+    }
+
+    val state by viewModel.state.collectAsState()
+    LoginScreen(
+        state = LoginState,
+        onLoginClick = onLoginClick,
+        onNavigateToSignUp = onNavigateToSignUp
+    )
+}
 
 @Composable
 fun LoginScreen(
-    onNavigateToHome: () -> Unit,
-    onNavigateToSignUp: () -> Unit
+    isLoading: Boolean,
+    loginSuccessful: Boolean,
+    onSuccessfulLogin: () -> Unit,
+    onNavigateToSignUp: () -> Unit,
+    onLoginClick: () -> Unit,
 ) {
+
+    LaunchedEffect(key1 = loginSuccessful) {
+        if (loginSuccessful) {
+            onSuccessfulLogin()
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -118,12 +148,13 @@ fun LoginScreen(
 
 
             Button(
-                onClick = onNavigateToHome,
+                onClick = onLoginClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
                     .padding(bottom = 8.dp),
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onTertiaryContainer)
+                enabled = !isLoading
             ) {
                 Text(text = "Log In", color = MaterialTheme.colorScheme.tertiaryContainer)
             }
@@ -147,8 +178,3 @@ fun LoginScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen(onNavigateToHome = {}, onNavigateToSignUp = {})
-}

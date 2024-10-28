@@ -4,10 +4,22 @@ import androidx.navigation.NavController
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class CalendarDestination(val route: String) {
-    data object Calendar : CalendarDestination("calendar")
+data class CalendarDestination(
+    val id : Int
+)
+
+fun NavController.navigateToCalendar(
+    eventID: Int
+) {
+    this.navigate(CalendarDestination(id = eventID))
 }
 
-fun NavController.navigateToCalendar() {
-    this.navigate(CalendarDestination.Calendar.route)
+fun NavController.Calendar(
+    onNavigationBack: () -> Unit
+) {
+    composable<CalendarDestination> {
+        CalendarRoute(
+            onNavigationBack = onNavigationBack
+        )
+    }
 }

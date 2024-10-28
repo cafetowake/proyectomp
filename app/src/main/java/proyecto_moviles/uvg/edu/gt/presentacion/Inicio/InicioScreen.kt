@@ -16,10 +16,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.MaterialTheme
+import androidx.navigation.NavController
 import proyecto_moviles.uvg.edu.gt.R
+import proyecto_moviles.uvg.edu.gt.presentacion.navigation.Screen
 
 @Composable
-fun StartScreen() {
+fun StartScreen(
+    navController: NavController, 
+    onLoginClick: () -> Unit = { navController.navigate("login") },
+    onSignUpClick: () -> Unit = { navController.navigate("sign_up") }
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,7 +45,7 @@ fun StartScreen() {
 
 
         Button(
-            onClick = { /* Acción para Log In */ },
+            onClick = onLoginClick,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary
             ),
@@ -60,7 +66,7 @@ fun StartScreen() {
 
 
         Button(
-            onClick = { /* Acción para Sign Up */ },
+            onClick = onSignUpClick,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer
             ),
@@ -79,10 +85,12 @@ fun StartScreen() {
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun StartScreenPreview() {
     MaterialTheme {
-        StartScreen()
+        StartScreen(navController = NavController( ))
     }
 }

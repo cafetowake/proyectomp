@@ -10,14 +10,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dfea3bbe-0df6-440d-a9eb-50966e080d13" name="Changes" comment="cambio">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioNavigation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.7/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.7/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/app/Proyecto-moviles.app.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/api/HttpClientFactory.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/model/guardarpuesto.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/repository/guardarpuesto.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/data/local/source/guardarpuesto.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/domain/guardarpuesto.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeNavigation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Home/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Home/HomeScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/common/guardarpuesto.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginNavigation.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Login/LoginScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/SingUp/SignUpNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/SingUp/SignUpNavigation.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/SingUp/SignUpScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/SingUp/SignUpScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpNavigation.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/login/Sing_up/SignUpScreen.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderNavigation.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Calendar/CalanderScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/AppNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/AppNavigation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectNavigation.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Create_Proyecto/CreateProyectScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioNavigation.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Inicio/InicioScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/Inicio/InicioScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskNavigation.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsNavigation.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/guardarpuesto.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,11 +73,22 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {}
+  &quot;history&quot;: [
+    {
+      &quot;state&quot;: &quot;OPEN&quot;,
+      &quot;author&quot;: &quot;JavierC22153&quot;
+    },
+    {
+      &quot;state&quot;: &quot;OPEN&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/cafetowake/proyectomp.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/cafetowake/Proyecto-moviles.git&quot;,
     &quot;accountId&quot;: &quot;d387766f-c371-4d7d-9634-196def993a19&quot;
   }
 }</component>
@@ -92,11 +131,6 @@
     ]
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\paula\AndroidStudioProjects\proyectomp\app\src\main\java\proyecto_moviles\uvg\edu\gt\data\network\dto" />
-    </key>
-  </component>
   <component name="RunManager" selected="Compose Preview.CalendarScreenPreview">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="Proyecto-moviles.app.main" />
@@ -466,27 +500,37 @@
       <option name="project" value="LOCAL" />
       <updated>1729744867432</updated>
     </task>
-    <task id="LOCAL-00003" summary="cambio">
+    <task id="LOCAL-00003" summary="orden">
       <option name="closed" value="true" />
-      <created>1729835770658</created>
+      <created>1729835366365</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1729835770658</updated>
+      <updated>1729835366365</updated>
     </task>
-    <task id="LOCAL-00004" summary="cambio">
+    <task id="LOCAL-00004" summary="place holders">
       <option name="closed" value="true" />
-      <created>1729917814966</created>
+      <created>1729836045671</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1729917814966</updated>
+      <updated>1729836045671</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="cambio">
+      <option name="closed" value="true" />
+      <created>1729995854512</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1729995854512</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Inicio" />
+    <MESSAGE value="orden" />
+    <MESSAGE value="place holders" />
     <MESSAGE value="cambio" />
     <option name="LAST_COMMIT_MESSAGE" value="cambio" />
   </component>

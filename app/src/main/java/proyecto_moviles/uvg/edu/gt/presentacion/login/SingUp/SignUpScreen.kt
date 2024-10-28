@@ -12,22 +12,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import proyecto_moviles.uvg.edu.gt.R
 
+
 @Composable
-fun SignUpScreen(
-    onNavigateToHome: () -> Unit,
-    onNavigateToLogin: () -> Unit
-) {
+fun SignUpScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.tertiary)
     ) {
-
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "SignUp Background Logo",
@@ -37,7 +33,6 @@ fun SignUpScreen(
                     alpha = 0.1f
                 }
         )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -45,9 +40,6 @@ fun SignUpScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-
-
             Text(
                 text = "Create a New Account",
                 color = MaterialTheme.colorScheme.onTertiary,
@@ -55,7 +47,6 @@ fun SignUpScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 32.dp)
             )
-
             val username = remember { mutableStateOf("") }
             TextField(
                 value = username.value,
@@ -65,7 +56,6 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             )
-
             val email = remember { mutableStateOf("") }
             TextField(
                 value = email.value,
@@ -75,7 +65,6 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             )
-
             val password = remember { mutableStateOf("") }
             val passwordVisible = remember { mutableStateOf(false) }
             TextField(
@@ -95,9 +84,8 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             )
-
             Button(
-                onClick = onNavigateToHome,
+                onClick = { /* Acción de Sign Up */ },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
@@ -106,26 +94,17 @@ fun SignUpScreen(
             ) {
                 Text(text = "Sign Up", color = MaterialTheme.colorScheme.tertiaryContainer)
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Have an account?", color = MaterialTheme.colorScheme.onBackground)
                 Spacer(modifier = Modifier.width(4.dp))
-                TextButton(onClick = onNavigateToLogin) {
+                TextButton(onClick = { /* Acción de Log In */ }) {
                     Text(text = "  Log In", color = MaterialTheme.colorScheme.onTertiaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.width(60.dp))
                 }
             }
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun SignUpScreenPreview() {
-    SignUpScreen( onNavigateToHome = {}, onNavigateToLogin = {})
-}
-

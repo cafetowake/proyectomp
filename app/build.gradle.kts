@@ -70,7 +70,9 @@ dependencies {
     implementation(libs.androidx.cardview) 
     implementation(libs.androidx.compose.material) 
     implementation(libs.androidx.compose.material.icons.core) 
-    implementation(libs.androidx.compose.material.icons.extended) 
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,5 +90,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.bundles.ktor)
     implementation(libs.bundles.coil)
+    implementation (libs.hilt.android)
+    kapt (libs.dagger.hilt.compiler)
 }
 

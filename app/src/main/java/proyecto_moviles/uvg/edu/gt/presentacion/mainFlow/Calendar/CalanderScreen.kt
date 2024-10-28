@@ -16,11 +16,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import proyecto_moviles.uvg.edu.gt.presentacion.mainFlow.Calendar.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Composable
+fun CalendarRoute(
+    onNavigationBack: ( ) -> Unit,
+    onNavigateToToDo: ( ) -> Unit,
+    onNavigateToProfile: ( ) -> Unit,
+    onNavigateToHome: ( ) -> Unit,
+    viewModel: CalendarViewModel = viewModel(factory = CalendarViewModel.Factory)
+) {
+    val state = viewModel.state.collectAsState()
 
+    CalendarScreen(
+        state = state,
+        onNavigationBack = onNavigationBack,
+        onNavigateToToDo = onNavigateToToDo,
+        onNavigateToProfile = onNavigateToProfile,
+        onNavigateToHome = onNavigateToHome
+    )
+}
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +53,7 @@ fun CalendarScreen( navController: NavController ,onNavigateToToDo: () -> Unit, 
             TopAppBar(
                 title = { Text("Calendar") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Acción para retroceder */ }) {
+                    IconButton(onClick = onNavigationBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -183,8 +202,3 @@ fun EventList(events: List<Pair<String, String>>) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CalendarScreenPreview() {
-    CalendarScreen()
-}

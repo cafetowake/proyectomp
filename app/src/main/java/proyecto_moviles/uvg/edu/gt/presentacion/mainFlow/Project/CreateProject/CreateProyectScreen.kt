@@ -1,6 +1,6 @@
 package proyecto_moviles.uvg.edu.gt.Create_Proyecto
 
-//noinspection UsingMaterialAndMaterial3Libraries
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

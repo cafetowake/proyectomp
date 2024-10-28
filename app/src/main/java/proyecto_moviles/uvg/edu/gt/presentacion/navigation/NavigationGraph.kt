@@ -26,7 +26,7 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
             ToDoListRoute()
         }
         composable(Screen.CalendarScreen.route) {
-            CalendarRoute()
+            CalendarRoute(onNavigationBack = { navController.popBackStack() })
         }
         composable(Screen.ProfileScreen.route) {
             ProfileRoute()

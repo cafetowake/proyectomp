@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import proyecto_moviles.uvg.edu.gt.data.model.Event
 
 
 class CalendarViewModel : ViewModel() {

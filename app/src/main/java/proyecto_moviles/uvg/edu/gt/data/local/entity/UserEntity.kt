@@ -6,8 +6,9 @@ import kotlinx.serialization.Serializable
 
 @Entity(tableName = "users")
 @Serializable
-data class UserEntiy(
+data class UserEntity(
     @PrimaryKey val id: String,
     val username: String,
-    val email: String
+    val email: String,
+    val password: String
 )

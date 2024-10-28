@@ -11,6 +11,7 @@ import proyecto_moviles.uvg.edu.gt.login.LoginRoute
 data object LoginDestination
 
 fun NavGraphBuilder.loginScreen(
+    onNavigateToSignUp: () -> Unit,
     onLoginClick: () -> Unit
 ) {
     composable<LoginDestination> {

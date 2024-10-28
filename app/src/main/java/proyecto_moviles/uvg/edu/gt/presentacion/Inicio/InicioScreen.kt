@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import proyecto_moviles.uvg.edu.gt.R
 import proyecto_moviles.uvg.edu.gt.presentacion.Inicio.StartState
@@ -29,7 +31,7 @@ fun StartRoute(
     onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit
 ){
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
     StartScreen(
         state = state,
@@ -41,7 +43,6 @@ fun StartRoute(
 
 @Composable
 fun StartScreen(
-    state: StartState,
     onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit,
     modifier: Modifier

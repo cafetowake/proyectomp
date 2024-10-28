@@ -44,6 +44,9 @@
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/New_Task/NewTaskScreen.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsNavigation.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/Projects/ProyectsScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListNavigation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/mainFlow/ToDoList/ToDoListScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/NavigationGraph.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/NavigationGraph.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/proyecto_moviles/uvg/edu/gt/presentacion/navigation/guardarpuesto.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
     </list>

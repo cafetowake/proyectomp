@@ -29,7 +29,7 @@ class StartViewModel(
                 .onSuccess { users ->
                     _state.update { it.copy(
                         isLoading = false,
-                        users = users
+                        user = users
                     ) }
                 }
                 .onFailure { error ->
@@ -38,7 +38,7 @@ class StartViewModel(
                         isError = true
                     ) }
 
-                    println(error)
+                    println (error)
                 }
 
 

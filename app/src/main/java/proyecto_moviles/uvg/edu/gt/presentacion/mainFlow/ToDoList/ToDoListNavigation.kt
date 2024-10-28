@@ -1,7 +1,7 @@
 package proyecto_moviles.uvg.edu.gt.ToDoList
+
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.uvg.pruebasprojecto.ToDoListScreenContent
 import kotlinx.serialization.Serializable
 
 @Serializable

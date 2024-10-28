@@ -1,13 +1,32 @@
 package proyecto_moviles.uvg.edu.gt.Sing_up
 
-import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
+import proyecto_moviles.uvg.edu.gt.login.LoginRoute
+import proyecto_moviles.uvg.edu.gt.navigation.LoginDestination
 
 @Serializable
-sealed class SignUpDestination(val route: String) {
-    data object SignUp : SignUpDestination("sign_up")
+data object SignUpDestination
+
+fun NavGraphBuilder.loginScreen(
+    onLoginClick: () -> Unit
+) {
+    composable<LoginDestination> {
+        LoginRoute(
+            onSuccessfulLogin = onLoginClick,
+            onNavigateToSignUp = onNavigateToSignUp
+        )
+    }
 }
 
-fun NavController.navigateToSignUp() {
-    this.navigate(SignUpDestination.SignUp.route)
+fun NavGraphBuilder.signUpScreen(
+    onSignUpClick: () -> Unit
+) {
+    composable<SignUpDestination> {
+        SignUpRoute(
+            onSuccessfulSignUp = onSignUpClick,
+            onNavigateToLogin = onNavigateToLogin
+        )
+    }
 }

@@ -8,12 +8,13 @@ import kotlinx.serialization.Serializable
 data object StartDestination
 
 fun NavGraphBuilder.StartScreen(
-    navigatetoStart: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToSignUp: () -> Unit
 ){
     composable<StartDestination>{
         StartRoute(
-            onLoginClick = navigatetoLogin,
-            onSignUpClick = navigatetoSignUp
+            onLoginClick = navigateToLogin,
+            onSignUpClick = navigateToSignUp
         )
     }
 }

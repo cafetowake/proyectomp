@@ -14,11 +14,30 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import proyecto_moviles.uvg.edu.gt.R
-
+import proyecto_moviles.uvg.edu.gt.presentacion.login.SingUp.SignUpViewModel
 
 @Composable
-fun SignUpScreen() {
+fun SignUpRoute(
+    onSignUpClick: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    viewModel: SignUpViewModel = viewModel(factory = SignUpViewModel.Factory)
+) {
+    val state = viewModel.state.collectAsState()
+
+    SignUpScreen(
+        state = state,
+        onSuccessfulSignUp = onSignUpClick,
+        onNavigateToLogin = onNavigateToLogin
+    )
+}
+
+@Composable
+fun SignUpScreen(
+    onSuccessfulSignUp: () -> Unit,
+    onNavigateToLogin: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()

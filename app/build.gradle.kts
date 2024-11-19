@@ -2,17 +2,19 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
     id("kotlin-kapt")
 }
 
 android {
     namespace = "proyecto_moviles.uvg.edu.gt"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "proyecto_moviles.uvg.edu.gt"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -74,6 +76,7 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.ui.desktop)
+    implementation(libs.google.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -93,5 +96,8 @@ dependencies {
     implementation(libs.bundles.coil)
     implementation (libs.hilt.android)
     kapt (libs.dagger.hilt.compiler)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase.libs)
+    implementation(libs.kotlinx.coroutines.play.services)
 }
 

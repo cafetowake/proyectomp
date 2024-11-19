@@ -8,7 +8,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,10 +16,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import proyecto_moviles.uvg.edu.gt.presentacion.mainFlow.Profile.ProfileViewModel
+
+@Composable
+fun ProfileRoute() {
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -59,12 +69,11 @@ fun ProfileScreen() {
                 }
             }
 
-
             Spacer(modifier = Modifier.height(16.dp))
             // Username
             OutlinedTextField(
-                value = "Username",
-                onValueChange = { /* Handle username change */ },
+                value = state.username,
+                onValueChange = viewModel::updateUsername,
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
@@ -76,8 +85,8 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(16.dp))
             // E-mail
             OutlinedTextField(
-                value = "username@gmail.com",
-                onValueChange = { /* Handle email change */ },
+                value = state.email,
+                onValueChange = viewModel::updateEmail,
                 label = { Text("E-mail") },
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
@@ -89,8 +98,8 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(16.dp))
             // Password
             OutlinedTextField(
-                value = "********",
-                onValueChange = { /* Handle password change */ },
+                value = state.password,
+                onValueChange = viewModel::updatePassword,
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
@@ -103,7 +112,7 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(16.dp))
             // Save button
             Button(
-                onClick = { /* Handle save button click */ },
+                onClick = { viewModel.saveProfile() },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Save")
@@ -114,6 +123,6 @@ fun ProfileScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun ProfileView(){
+fun ProfileView() {
     ProfileScreen()
 }

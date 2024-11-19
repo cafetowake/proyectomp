@@ -6,7 +6,7 @@ import proyecto_moviles.uvg.edu.gt.data.local.dao.UserDao
 
 
 @Database(
-    entities = [UserEntity::class],
+    entities = [UserEntity::class], [TaskEntity::class],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {

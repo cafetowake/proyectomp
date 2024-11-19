@@ -17,32 +17,71 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import proyecto_moviles.uvg.edu.gt.Inicio.StartItem
 import proyecto_moviles.uvg.edu.gt.R
 import proyecto_moviles.uvg.edu.gt.data.model.User
+import proyecto_moviles.uvg.edu.gt.presentacion.Inicio.StartViewModel
+import proyecto_moviles.uvg.edu.gt.presentacion.common.ErrorView
+import proyecto_moviles.uvg.edu.gt.presentacion.common.LoadingView
 import proyecto_moviles.uvg.edu.gt.presentacion.login.Login.LoginEvent
 import proyecto_moviles.uvg.edu.gt.presentacion.login.Login.LoginState
 
 @Composable
-fun LoginRoute() {
-    val login = UserApi.getUser().map {UserDTO->
-        User(
-            id = UserDTO.id,
-            email = UserDTO.email,
-            name = UserDTO.username
-        )
-    }
+fun LoginRoute(
+    viewModel: StartViewModel = viewModel(factory = StartViewModel.Factory),
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit
+){
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
-    val state by viewModel.state.collectAsState()
     LoginScreen(
-        state = LoginState,
+        state = state,
         onLoginClick = onLoginClick,
-        onNavigateToSignUp = onNavigateToSignUp
+        onSignUpClick = onSignUpClick,
+        modifier = Modifier.fillMaxSize()
     )
 }
 
 @Composable
 fun LoginScreen(
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    modifier: Modifier
+){
+    Box(
+        modifier = Modifier
+    ){
+        when{
+            state.isLoading -> {
+                LoadingView(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            state.isError -> {
+                ErrorView(
+                    onRetryClick = { /*TODO*/ },
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            else{
+                items(state.data) { user ->
+                    LoginItem(
+                        user = user,
+                        onLoginClick = onLoginClick,
+                        onSignUpClick = onSignUpClick,
+                        modifier = Modifier.fillMaxSize(),
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+fun LoginItem(
     isLoading: Boolean,
     loginSuccessful: Boolean,
     onSuccessfulLogin: () -> Unit,

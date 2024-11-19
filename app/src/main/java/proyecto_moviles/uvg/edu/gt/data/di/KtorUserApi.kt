@@ -6,6 +6,7 @@ import proyecto_moviles.uvg.edu.gt.data.network.api.UserApi
 import proyecto_moviles.uvg.edu.gt.data.network.dto.UserDto
 import proyecto_moviles.uvg.edu.gt.data.network.util.NetworkError
 import proyecto_moviles.uvg.edu.gt.data.network.util.safeCall
+import proyecto_moviles.uvg.edu.gt.data.network.util.Result
 
 class KtorUserApi(
     private val client: HttpClient

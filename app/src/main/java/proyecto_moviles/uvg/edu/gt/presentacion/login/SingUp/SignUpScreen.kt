@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import proyecto_moviles.uvg.edu.gt.R
+import proyecto_moviles.uvg.edu.gt.data.model.User
+import proyecto_moviles.uvg.edu.gt.login.LoginScreen
+import proyecto_moviles.uvg.edu.gt.presentacion.login.Login.LoginState
 import proyecto_moviles.uvg.edu.gt.presentacion.login.SingUp.SignUpViewModel
 
 @Composable

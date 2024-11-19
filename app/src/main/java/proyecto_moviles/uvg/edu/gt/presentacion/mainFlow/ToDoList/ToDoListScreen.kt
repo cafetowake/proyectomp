@@ -24,6 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import proyecto_moviles.uvg.edu.gt.R
 
+@Composable
+fun ToDoListRoute(){
+
+}
+
 class ToDoListScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

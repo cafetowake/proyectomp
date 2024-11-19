@@ -2,6 +2,7 @@ package proyecto_moviles.uvg.edu.gt.data.network.api
 
 import proyecto_moviles.uvg.edu.gt.data.network.dto.UserDto
 import proyecto_moviles.uvg.edu.gt.data.network.util.NetworkError
+import proyecto_moviles.uvg.edu.gt.data.network.util.Result
 
 interface UserApi{
     suspend fun getAllUsers(): Result<UserDto, NetworkError>

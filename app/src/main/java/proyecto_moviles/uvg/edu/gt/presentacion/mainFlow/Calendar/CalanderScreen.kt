@@ -7,13 +7,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -118,42 +116,41 @@ fun CalendarScreen( navController: NavController ,onNavigateToToDo: () -> Unit, 
                 ) {
                     EventList(
                         events = listOf(
-                            "Project 4" to "Task: Hello World",
-                            "Math exam" to "Study"
+
                         )
                     )
                 }
             }
         },
-        bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-            ) {
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            Icons.AutoMirrored.Filled.List,
-                            contentDescription = "To do list"
-                        )
-                    },
-                    label = { Text("To do list") },
-                    selected = false,
-                    onClick = { /*TODO*/ }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.CalendarToday, contentDescription = "Calendar") },
-                    label = { Text("Calendar") },
-                    selected = true,
-                    onClick = { /*TODO*/ }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Person, contentDescription = "Profile") },
-                    label = { Text("Profile") },
-                    selected = false,
-                    onClick = { /*TODO*/ }
-                )
-            }
-        }
+//        bottomBar = {
+//            NavigationBar(
+//                containerColor = MaterialTheme.colorScheme.primaryContainer,
+//            ) {
+//                NavigationBarItem(
+//                    icon = {
+//                        Icon(
+//                            Icons.AutoMirrored.Filled.List,
+//                            contentDescription = "To do list"
+//                        )
+//                    },
+//                    label = { Text("To do list") },
+//                    selected = false,
+//                    onClick = {  }
+//                )
+//                NavigationBarItem(
+//                    icon = { Icon(Icons.Filled.CalendarToday, contentDescription = "Calendar") },
+//                    label = { Text("Calendar") },
+//                    selected = true,
+//                    onClick = { }
+//                )
+//                NavigationBarItem(
+//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Profile") },
+//                    label = { Text("Profile") },
+//                    selected = false,
+//                    onClick = {}
+//                )
+//            }
+//        }
     )
 }
 

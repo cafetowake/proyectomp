@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "743239890578",
+    "firebase_url": "https://proyectomoviles-adb1c-default-rtdb.firebaseio.com",
+    "project_id": "proyectomoviles-adb1c",
+    "storage_bucket": "proyectomoviles-adb1c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743239890578:android:9c4e1f10c4b344fc8bd84b",
+        "android_client_info": {
+          "package_name": "proyecto_moviles.uvg.edu.gt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrNolpvjJuxHLx4vgjqfcnFFZwbnodBxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -71,7 +71,6 @@ fun StartScreen(
                         onSignUpClick = onSignUpClick,
                         modifier = Modifier.fillMaxSize(),
                 }
-
             }
         }
     }

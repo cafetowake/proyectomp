@@ -1,5 +1,6 @@
 package proyecto_moviles.uvg.edu.gt
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,59 +14,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import proyecto_moviles.uvg.edu.gt.ui.theme.ProyectomovilesTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : ComponentActivity() {
+
+    private val authViewModel: AuthViewModel by viewModels {AuthViewModel.Factory}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()  // Mantener la funcionalidad de edge-to-edge
+
+        installSplashScreen()
 
         setContent {
-            ProyectomovilesTheme {  // Se mantiene el uso del tema personalizado
-                // Scaffold para la estructura de la UI
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Llamadas a las diferentes pantallas
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                    // Invocamos las otras funciones
-                    HomeScreen()
-                    ProfileScreen() 
-                    NewTaskScreen()
+            ProyectomovilesTheme {
+                Surface{
+                    FirebaseApp
                 }
+
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    HomeScreen()
+//                    ProfileScreen()
+//                    NewTaskScreen()
+//                }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ProyectomovilesTheme {
-        Greeting("Android")
-    }
-}
-
-
-@Composable
-fun HomeScreen() {
-    // Implementación de la pantalla HomeScreen
-}
-
-@Composable
-fun ProfileScreen() {
-    // Implementación de la pantalla ProfileScreen
-}
-
-@Composable
-fun NewTaskScreen() {
-    // Implementación de la pantalla NewTaskScreen
-}
